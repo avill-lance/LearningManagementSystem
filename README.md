@@ -1,5 +1,3 @@
-Create .env file and paste this
-
 APP_NAME=Laravel
 APP_ENV=local
 APP_KEY=base64:Ul9PZ3bgXRF80yApi5CbKUK4D/SUtcVTbNOpXeBO/34=
