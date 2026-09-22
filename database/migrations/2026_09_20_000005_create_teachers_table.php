@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->increments('teacher_id');
             $table->unsignedInteger('user_id')->unique();
             $table->string('teacher_number', 20)->unique();
-            $table->string('specialization', 150)->nullable();
+            $table->enum('specialization', ['Mathematics', 'Science'])->nullable();
             $table->dateTime('created_at')->useCurrent();
             $table->foreign('user_id')->references('user_id')->on('users')->cascadeOnDelete()->cascadeOnUpdate();
         });

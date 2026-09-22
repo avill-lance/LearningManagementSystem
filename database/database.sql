@@ -1,3 +1,9 @@
+INSERT INTO `users` (`user_id`, `first_name`, `last_name`, `middle_name`, `password`, `email`, `role`, `status`, `is_deleted`) VALUES
+(1, 'Juan', 'Dela Cruz', NULL, '$2y$10$Y1vIULsMyjnhyUvOlJTku.IDLoR7mvehiLsT2uaNKGwQaocuqe8SC', 'juan.delacruz@example.com', 'Student', 'Active', 0),
+(2, 'Andrea', 'Santos', 'Reyes', '$2y$10$qa4TqzVvxse8TfjH.YnZq.cVYSB5yACk8fQj726GBR35gk9ky6pki', 'andrea.santos@example.com', 'Student', 'Active', 0),
+(3, 'Maria', 'Santos', NULL, '$2y$10$opj5udUgP27IsWmNJeDaMuxKaopL5XNK6FSMwE.PJ5WoLNDuiPfyS', 'maria.santos@school.edu', 'Teacher', 'Active', 0),
+(4, 'Jose', 'Reyes', NULL, '$2y$10$E1c4ZhJ319I9NG1up5loWepxXI8PIIMSTidDfdnYwW/ullPoTNCoe', 'jose.reyes@school.edu', 'Teacher', 'Active', 0);
+
 INSERT INTO `tracks` (`track_id`, `track_code`, `track_name`, `description`, `created_at`) VALUES
 (1, 'ACAD', 'Academic Track', 'Prepares students for college/university education', '2026-07-04 03:08:34'),
 (2, 'TVL', 'Technical-Vocational-Livelihood Track', 'Prepares students for employment, entrepreneurship, or middle-level skills development', '2026-07-04 03:08:34');
