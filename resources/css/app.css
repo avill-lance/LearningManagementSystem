@@ -21,3 +21,11 @@
     --color-primary-950: #172554;
     --color-primary: #2563eb;
 }
+
+/* Dark mode via class strategy */
+html.dark {
+    color-scheme: dark;
+}
+
+/* Alpine.js x-cloak */
+[x-cloak] { display: none !important; }

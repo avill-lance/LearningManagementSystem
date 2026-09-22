@@ -11,6 +11,6 @@
 
 @section('title', 'Admin Dashboard')
 
-@push('styles')
+@section('styles')
     {{-- Admin-specific styles --}}
-@endpush
+@endsection

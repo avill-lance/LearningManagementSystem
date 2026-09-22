@@ -16,6 +16,7 @@
     },
     "dependencies": {
         "alpinejs": "^3.17.3",
+        "apexcharts": "^7.5.1",
         "lucide": "^1.47.0"
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Accounts;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class RegisterTeacherRequest extends FormRequest
 {
@@ -18,7 +19,7 @@ class RegisterTeacherRequest extends FormRequest
             'last_name'      => ['required', 'string', 'max:50', 'regex:/^[\p{L}\s.\'-]+$/u'],
             'email'          => ['required', 'email:rfc', 'max:100', 'unique:teachers,email'],
             'phone'          => ['required', 'string', 'max:25', 'regex:/^[+0-9()\-\s]+$/'],
-            'specialization' => ['nullable', 'string', 'max:150'],
+            'specialization' => ['nullable', Rule::in(['Mathematics', 'Science'])],
             'username'       => [
                 'required', 'string', 'min:3', 'max:50',
                 'regex:/^[a-z0-9._-]+$/',
