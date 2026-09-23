@@ -4,7 +4,6 @@ namespace App\Services\Accounts;
 
 use App\Models\Account;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class AuthService
 {
@@ -24,13 +23,7 @@ class AuthService
             return $this->fail('locked', 'This account is temporarily locked. Try again later.', $account);
         }
 
-        // Ensure the stored password_hash is a valid Bcrypt hash before checking
-        $hashedPassword = $account->password_hash;
-        if (! $this->isValidBcrypt($hashedPassword)) {
-            return $this->handleFailedAttempt($account);
-        }
-
-        if (! Hash::check($password, $hashedPassword)) {
+        if (! Hash::check($password, $account->password_hash)) {
             return $this->handleFailedAttempt($account);
         }
 
@@ -108,13 +101,5 @@ class AuthService
             'attempts_remaining' => Account::MAX_FAILED_ATTEMPTS,
             'lockout_until'      => null,
         ];
-    }
-
-    /**
-     * Check if a string is a valid Bcrypt hash.
-     */
-    private function isValidBcrypt(string $password): bool
-    {
-        return Str::startsWith($password, ['$2y$', '$2a$', '$2b$']);
     }
 }
