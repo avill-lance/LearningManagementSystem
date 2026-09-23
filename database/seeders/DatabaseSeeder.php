@@ -15,23 +15,12 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->createDefaultAdmin();
-    }
+        // User::factory(10)->create();
 
-    /**
-     * Create a default admin user.
-     */
-    private function createDefaultAdmin(): void
-    {
-        User::create([
-            'first_name' => 'Admin',
-            'last_name' => 'User',
-            'middle_name' => null,
-            'email' => 'admin@school.com',
-            'password' => bcrypt('admin123'),
+        User::factory()->create([
+            'email' => 'admin123@example.com',
+            'password' => bcrypt('Password123'),
             'role' => 'Admin',
-            'status' => 'Active',
-            'is_deleted' => 0,
         ]);
     }
 }
