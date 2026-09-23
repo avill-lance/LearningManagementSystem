@@ -1,24 +1,22 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ dark: localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)"
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" x-data="{ dark: localStorage.getItem('theme') === 'dark' }"
     x-init="
         $watch('dark', val => {
-            if (val) {
-                document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
-            } else {
-                document.documentElement.classList.remove('dark');
-                localStorage.theme = 'light';
-            }
+            document.documentElement.classList.toggle('dark', val);
+            localStorage.setItem('theme', val ? 'dark' : 'light');
         });
-        if (document.documentElement.classList.contains('dark')) {
-            $set('dark', true);
-        }
     "
     x-cloak
     :class="{ 'dark': dark }"
     class="">
 <head>
     <meta charset="utf-8">
+    {{-- Apply saved theme before first paint. Light mode is the default. --}}
+    <script>
+        try {
+            if (localStorage.getItem('theme') === 'dark') document.documentElement.classList.add('dark');
+        } catch (e) {}
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'LMS') }} - @yield('title', 'Dashboard')</title>
@@ -55,6 +53,9 @@
     {{-- Main Content Area with sm:ml-64 --}}
     <div class="p-4 sm:ml-64 min-h-screen flex flex-col justify-between">
         <div class="flex-1">
+            {{-- Top Navbar (optional, provided by role layouts) --}}
+            @yield('navbar')
+
             {{-- Flash Messages --}}
             @include('partials.flash-messages')
 
