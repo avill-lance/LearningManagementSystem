@@ -7,7 +7,7 @@ This file is one module out of a set of module-context files for the **Senior Hi
 curriculum (Academic, TVL, Sports, Arts & Design tracks; STEM, ABM, HUMSS, GAS, etc. strands),
 adaptable to any SHS setup.
 
-**Tech stack:** Laravel (backend/API) + Vue.js (frontend SPA). See **Section 0 — Tech Stack** in
+**Tech stack (as planned):** Laravel (backend/API) + Vue.js (frontend SPA). *Correction: the actual codebase never adopted Vue — it is server-rendered Laravel Blade + Alpine.js + ApexCharts (see `package.json`; no Vue dependency exists). See Module 16 and `modules/README.md` for real implementation status.* See **Section 0 — Tech Stack** in
 [`senior-high-school-lms-plan.md`](../senior-high-school-lms-plan.md) for the full stack decision,
 the strict scalability/readability rule that governs all code in this project, and an explanation
 of the Laravel file structure.
@@ -114,6 +114,14 @@ flowchart TD
 ## Implementation Notes
 
 The highest-risk module for hardcoded logic. GRADING_TEMPLATE must be data-driven so DepEd weight changes never require a code deploy.
+
+---
+
+## Implementation Status
+
+*(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
+
+**Not started.** Migrations exist for `grading_templates`, `grade_components`, and `final_grades`, but there are no Eloquent models, no controller, and both `teacher/grades/index.blade.php` and `student/grades/index.blade.php` are unwired placeholder views.
 
 ---
 

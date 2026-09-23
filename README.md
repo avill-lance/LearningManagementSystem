@@ -1,65 +1,96 @@
-APP_NAME=Laravel
-APP_ENV=local
-APP_KEY=base64:Ul9PZ3bgXRF80yApi5CbKUK4D/SUtcVTbNOpXeBO/34=
-APP_DEBUG=true
-APP_URL=http://localhost
+# Learning Management System
 
-APP_LOCALE=en
-APP_FALLBACK_LOCALE=en
-APP_FAKER_LOCALE=en_US
+A Senior High School Learning Management System built on Laravel 12, with
+server-rendered Blade views, Alpine.js, ApexCharts and Tailwind CSS v4 (via
+Vite). See [`modules/README.md`](modules/README.md) for a per-module doc
+index and real implementation status.
 
-APP_MAINTENANCE_DRIVER=file
-# APP_MAINTENANCE_STORE=database
+## Prerequisites
 
-# PHP_CLI_SERVER_WORKERS=4
+- PHP 8.2+ with Composer
+- Node.js 20.19+ (or 22.12+) and npm
+- MySQL (e.g. via XAMPP) — or SQLite if you'd rather skip installing a DB server
 
-BCRYPT_ROUNDS=12
+## Quick setup
 
-LOG_CHANNEL=stack
-LOG_STACK=single
-LOG_DEPRECATIONS_CHANNEL=null
-LOG_LEVEL=debug
+```bash
+git clone <repo-url>
+cd LearningManagementSystem
+composer run setup
+```
 
-DB_CONNECTION=sqlite
-# DB_HOST=127.0.0.1
-# DB_PORT=3306
-# DB_DATABASE=laravel
-# DB_USERNAME=root
-# DB_PASSWORD=
+`composer run setup` runs `composer install`, copies `.env.example` to
+`.env`, generates the app key, runs migrations, then `npm install` and
+`npm run build`. It expects the target database to already exist — see
+"Database setup" below before running it, or use the manual steps instead.
 
-SESSION_DRIVER=database
-SESSION_LIFETIME=120
-SESSION_ENCRYPT=false
-SESSION_PATH=/
-SESSION_DOMAIN=null
+## Manual setup
 
-BROADCAST_CONNECTION=log
-FILESYSTEM_DISK=local
-QUEUE_CONNECTION=database
+1. **Install PHP dependencies**
+   ```bash
+   composer install
+   ```
+2. **Install JS dependencies**
+   ```bash
+   npm install
+   ```
+3. **Configure environment**
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+4. **Database setup**
+   - Default is MySQL, database name `enrollment_management_system` (matches
+     `.env.example`). Create it first, e.g. in phpMyAdmin ("New" → name it
+     `enrollment_management_system`) or:
+     ```bash
+     mysql -u root -e "CREATE DATABASE enrollment_management_system"
+     ```
+   - Prefer not to run MySQL? Set `DB_CONNECTION=sqlite` in `.env` and create
+     an empty `database/database.sqlite` file instead — no server needed.
+   - Then run migrations and seed the initial admin account (self-service
+     registration is disabled, so seeding is the only way to get a login):
+     ```bash
+     php artisan migrate
+     php artisan db:seed
+     ```
+     Seeded login: `admin123@example.com` / `Password123` — you'll be
+     required to change this password on first login.
+5. **Build frontend assets**
+   ```bash
+   npm run build   # production build
+   # or
+   npm run dev      # dev server with hot reload
+   ```
 
-CACHE_STORE=database
-# CACHE_PREFIX=
+## Running the app
 
-MEMCACHED_HOST=127.0.0.1
+- **Via XAMPP/Apache**: point a vhost (or `http://localhost/LearningManagementSystem/public`)
+  at the `public/` folder.
+- **Via Artisan's built-in server**:
+  ```bash
+  php artisan serve
+  ```
+- **All-in-one dev workflow** (server + queue listener + log tailing + Vite,
+  concurrently):
+  ```bash
+  composer run dev
+  ```
 
-REDIS_CLIENT=phpredis
-REDIS_HOST=127.0.0.1
-REDIS_PASSWORD=null
-REDIS_PORT=6379
+## Running tests
 
-MAIL_MAILER=log
-MAIL_SCHEME=null
-MAIL_HOST=127.0.0.1
-MAIL_PORT=2525
-MAIL_USERNAME=null
-MAIL_PASSWORD=null
-MAIL_FROM_ADDRESS="hello@example.com"
-MAIL_FROM_NAME="${APP_NAME}"
+```bash
+composer test
+# or
+php artisan test
+```
 
-AWS_ACCESS_KEY_ID=
-AWS_SECRET_ACCESS_KEY=
-AWS_DEFAULT_REGION=us-east-1
-AWS_BUCKET=
-AWS_USE_PATH_STYLE_ENDPOINT=false
+Tests run against an in-memory SQLite database with array session/cache and
+a sync queue (see `phpunit.xml`), so no extra setup is required.
 
-VITE_APP_NAME="${APP_NAME}"
+## Documentation
+
+Deeper module-by-module docs (data model, file map, implementation status)
+live in [`modules/`](modules/), starting with
+[`modules/README.md`](modules/README.md).
+

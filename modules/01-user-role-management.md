@@ -7,7 +7,7 @@ This file is one module out of a set of module-context files for the **Senior Hi
 curriculum (Academic, TVL, Sports, Arts & Design tracks; STEM, ABM, HUMSS, GAS, etc. strands),
 adaptable to any SHS setup.
 
-**Tech stack:** Laravel (backend/API) + Vue.js (frontend SPA). See **Section 0 — Tech Stack** in
+**Tech stack (as planned):** Laravel (backend/API) + Vue.js (frontend SPA). *Correction: the actual codebase never adopted Vue — it is server-rendered Laravel Blade + Alpine.js + ApexCharts (see `package.json`; no Vue dependency exists). See Module 16 and `modules/README.md` for real implementation status.* See **Section 0 — Tech Stack** in
 [`senior-high-school-lms-plan.md`](../senior-high-school-lms-plan.md) for the full stack decision,
 the strict scalability/readability rule that governs all code in this project, and an explanation
 of the Laravel file structure.
@@ -139,6 +139,28 @@ flowchart TD
 ## Implementation Notes
 
 This is the identity/auth backbone every other module depends on — build it first and keep it framework-agnostic where possible (thin controllers, logic in services).
+
+---
+
+## Implementation Status
+
+*(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
+
+**Done:**
+- Session-based login (`WebAuthController::login`) — bcrypt validation, auto-rehash on outdated hash, redirects by role.
+- Forced first-login password change: `PasswordChangeController` + `EnsurePasswordIsChanged` middleware (`password.changed` alias), covered by `tests/Feature/ForcedPasswordChangeTest.php` (7 passing tests).
+- Admin-driven account CRUD (`WebAuthController::adminUsers*`): create/edit/list/show, soft delete (`is_deleted`) + restore. Creates the matching `Student` or `Teacher` profile row inline when the role is set.
+- Models: `User`, `Student`, `Teacher`.
+
+**Partial / gaps:**
+- Role checks are ad hoc `abort_unless(in_array($request->user()->role, [...]))` calls repeated per controller — no Policies/Gates yet.
+- `Guardian` model does not exist even though the `guardians` table does (see Module 12).
+- Self-service registration and password-reset flows described in earlier drafts of this doc were removed from the codebase — account creation is Admin-only via `/admin/users`.
+
+**Not started:**
+- Bulk CSV import for start-of-year enrollment.
+- Account status lifecycle beyond `Active`/`is_deleted` (no suspended/graduated/transferred-out states).
+- Multi-guardian-to-student linking UI (`student_guardians` table exists, unused).
 
 ---
 

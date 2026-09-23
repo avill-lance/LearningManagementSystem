@@ -7,7 +7,7 @@ This file is one module out of a set of module-context files for the **Senior Hi
 curriculum (Academic, TVL, Sports, Arts & Design tracks; STEM, ABM, HUMSS, GAS, etc. strands),
 adaptable to any SHS setup.
 
-**Tech stack:** Laravel (backend/API) + Vue.js (frontend SPA). See **Section 0 — Tech Stack** in
+**Tech stack (as planned):** Laravel (backend/API) + Vue.js (frontend SPA). *Correction: the actual codebase never adopted Vue — it is server-rendered Laravel Blade + Alpine.js + ApexCharts (see `package.json`; no Vue dependency exists). See Module 16 and `modules/README.md` for real implementation status.* See **Section 0 — Tech Stack** in
 [`senior-high-school-lms-plan.md`](../senior-high-school-lms-plan.md) for the full stack decision,
 the strict scalability/readability rule that governs all code in this project, and an explanation
 of the Laravel file structure.
@@ -92,6 +92,20 @@ flowchart TD
 ## Implementation Notes
 
 This module is mostly a read-only composite view over Grading (7), Attendance (4), Communication (8), and Reports (13) — avoid duplicating their data, query through them.
+
+---
+
+## Implementation Status
+
+*(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
+
+**Partial / gaps:**
+- The `guardians` table exists (migration `2026_09_20_000004_create_guardians_table.php`, `user_id`/`full_name`/`relationship`/`contact_number`), and `students.guardian_id` is a nullable FK into it — but there is **no `Guardian` Eloquent model** in `app/Models/`.
+
+**Not started:**
+- No guardian portal routes, controller, or views of any kind.
+- No multi-ward (one guardian, multiple children) switching UI.
+- The `student_guardians` many-to-many table referenced in Module 1 is unused.
 
 ---
 

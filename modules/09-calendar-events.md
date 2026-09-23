@@ -7,7 +7,7 @@ This file is one module out of a set of module-context files for the **Senior Hi
 curriculum (Academic, TVL, Sports, Arts & Design tracks; STEM, ABM, HUMSS, GAS, etc. strands),
 adaptable to any SHS setup.
 
-**Tech stack:** Laravel (backend/API) + Vue.js (frontend SPA). See **Section 0 — Tech Stack** in
+**Tech stack (as planned):** Laravel (backend/API) + Vue.js (frontend SPA). *Correction: the actual codebase never adopted Vue — it is server-rendered Laravel Blade + Alpine.js + ApexCharts (see `package.json`; no Vue dependency exists). See Module 16 and `modules/README.md` for real implementation status.* See **Section 0 — Tech Stack** in
 [`senior-high-school-lms-plan.md`](../senior-high-school-lms-plan.md) for the full stack decision,
 the strict scalability/readability rule that governs all code in this project, and an explanation
 of the Laravel file structure.
@@ -106,6 +106,20 @@ flowchart TD
 ## Implementation Notes
 
 GAP: the current ERD (section 4) has no dedicated EVENT table — Calendar reuses SECTION/CLASS_SCHEDULE dates today. Add an EVENT entity (title, scope, date range, audience) before building this module so holidays/exams/immersion aren't shoehorned into scheduling tables.
+
+---
+
+## Implementation Status
+
+*(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
+
+**Done:**
+- `ScheduleEvent` model with `upcomingForStudent()` scope (personal events created by the student, or events scoped to their active section, within a 14-day window) — built as a Module 16 dependency and covered by `tests/Feature/StudentDashboardTest.php`. The student dashboard's "Upcoming Events" widget is real and working.
+
+**Not started:**
+- `shared/calendar/index.blade.php` (the `/calendar` route) is an unwired stub — no month/week view, no event creation UI for any role.
+- No `CalendarController`/`EventController` for admin or teacher event CRUD.
+- No recurring-event support.
 
 ---
 

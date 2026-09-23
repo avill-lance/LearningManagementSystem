@@ -99,10 +99,6 @@
                     <h1 class="text-center text-xl font-semibold text-gray-900">
                         Login To Your Account
                     </h1>
-                    <p class="mt-3 text-center text-sm text-gray-600">
-                        You dont have an account
-                        <a href="{{ route('signup') }}" class="font-semibold text-sky-700 underline underline-offset-2 hover:text-sky-900">Sign up</a>
-                    </p>
 
                     {{-- Session Status --}}
                     @if (session('status'))
@@ -226,10 +222,6 @@
                                 Login
                             </button>
                         </div>
-
-                        <p class="mt-8 text-center">
-                            <a href="{{ route('password.request') }}" class="text-xs font-semibold text-gray-800 underline underline-offset-2 hover:text-sky-700">Forgot Password??</a>
-                        </p>
                     </form>
                 </div>
             </div>

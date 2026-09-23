@@ -9,6 +9,9 @@ class Strand extends Model
     protected $table = 'strands';
     protected $primaryKey = 'strand_id';
 
+    // The strands table only has created_at.
+    const UPDATED_AT = null;
+
     protected $fillable = [
         'track_id', 'strand_code', 'strand_name', 'description',
     ];

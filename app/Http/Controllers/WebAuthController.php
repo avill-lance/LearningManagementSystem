@@ -48,6 +48,10 @@ class WebAuthController extends Controller
         Auth::login($user, $request->boolean('remember'));
         $request->session()->regenerate();
 
+        if ($user->must_change_password && in_array($user->role, ['Teacher', 'Student'], true)) {
+            return redirect()->route('password.change');
+        }
+
         return match ($user->role) {
             'Admin', 'Staff', 'Registrar', 'Accounting' => redirect()->intended('/admin/'),
             'Teacher' => redirect()->intended('/teacher/'),
@@ -292,6 +296,8 @@ class WebAuthController extends Controller
                 'middle_name' => $validated['middle_name'] ?? null,
                 'email' => $validated['email'],
                 'password' => Hash::make($validated['password']),
+                // Teacher/Student accounts must change their admin-assigned password on first login.
+                'must_change_password' => in_array($validated['role'], ['Teacher', 'Student'], true),
                 'role' => $validated['role'],
                 'status' => $validated['status'],
                 'is_deleted' => $validated['is_deleted'] ?? false,
@@ -374,12 +380,18 @@ class WebAuthController extends Controller
         ]);
 
         DB::transaction(function () use ($user, $validated) {
+            $passwordChanged = (bool) $validated['password'];
+
             $user->update([
                 'first_name' => $validated['first_name'],
                 'last_name' => $validated['last_name'],
                 'middle_name' => $validated['middle_name'] ?? null,
                 'email' => $validated['email'],
-                'password' => $validated['password'] ? Hash::make($validated['password']) : $user->password,
+                'password' => $passwordChanged ? Hash::make($validated['password']) : $user->password,
+                // Only re-flag for a forced change when the admin actually assigned a new password.
+                'must_change_password' => $passwordChanged
+                    ? in_array($validated['role'], ['Teacher', 'Student'], true)
+                    : $user->must_change_password,
                 'role' => $validated['role'],
                 'status' => $validated['status'],
                 'contact_number' => $validated['contact_number'] ?? null,
@@ -460,11 +472,6 @@ class WebAuthController extends Controller
     public function teacherDashboard(Request $request): View|RedirectResponse
     {
         return $this->dashboardFor($request, ['Teacher'], 'teacher.dashboard');
-    }
-
-    public function studentDashboard(Request $request): View|RedirectResponse
-    {
-        return $this->dashboardFor($request, ['Student'], 'student.dashboard');
     }
 
     public function logout(Request $request): RedirectResponse

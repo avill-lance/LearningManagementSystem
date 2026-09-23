@@ -34,7 +34,10 @@
                      <a href="{{ url('/student/schedule') }}" class="pl-10 flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">Schedule</a>
                   </li>
                   <li>
-                     <a href="{{ url('/student/assignments') }}" class="pl-10 flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">Assignments</a>
+                     <a href="{{ route('student.assignments.index') }}" class="pl-10 flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">Assignments</a>
+                  </li>
+                  <li>
+                     <a href="{{ route('student.quizzes.index') }}" class="pl-10 flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">Quizzes</a>
                   </li>
                   <li>
                      <a href="{{ url('/student/materials') }}" class="pl-10 flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">Materials</a>
@@ -43,6 +46,18 @@
                      <a href="{{ url('/student/grades') }}" class="pl-10 flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">Grades</a>
                   </li>
             </ul>
+         </li>
+         <li>
+            <a href="{{ route('calendar.index') }}" class="flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/></svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Calendar</span>
+            </a>
+         </li>
+         <li>
+            <a href="{{ route('announcements.index') }}" class="flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
+               <svg class="shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.5 5.5a2.5 2.5 0 0 1 5 0V9m-5-3.5v3.379M9.5 5.5A2.5 2.5 0 0 0 7 8v6.5c0 1.243-.895 2.235-1.72 2.928A1 1 0 0 0 6 19h12a1 1 0 0 0 .72-1.572c-.825-.693-1.72-1.685-1.72-2.928V8a2.5 2.5 0 0 0-2.5-2.5m-5 0h5M10 19v1a2 2 0 1 0 4 0v-1"/></svg>
+               <span class="flex-1 ms-3 whitespace-nowrap">Announcements</span>
+            </a>
          </li>
          <li>
             <a href="{{ url('/student/enrollment') }}" class="flex items-center px-2 py-1.5 text-gray-900 rounded-lg dark:text-white hover:bg-gray-100 dark:hover:bg-gray-700 group">
