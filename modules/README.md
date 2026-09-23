@@ -15,7 +15,7 @@ you don't hit the same Laravel/PowerShell/Docker rough edges twice.
 | # | Module | Doc | Backend | Frontend | Notes |
 |---|--------|-----|---------|----------|-------|
 | 01 | Authentication & Accounts | [01-auth-accounts.md](./01-auth-accounts.md) | ✅ Done | ⏳ Pending Blade port | Login, register (student/teacher), username check, lockout, password reset scaffolding |
-| 02 | Enrollment & Academic Structure | [02-enrollment.md](./02-enrollment.md) | ⏳ Not started | ⏳ Not started | Tracks, Strands, Sections, Semesters, Enrollments |
+| 02 | Enrollment & Academic Structure | [02-enrollment-academic-structure.md](./02-enrollment-academic-structure.md) | 🚧 In progress | ⏳ Not started | Tracks, Strands, Sections, Semesters, Enrollments - Foundation work completed |
 | 03 | Class & Scheduling | [03-class-scheduling.md](./03-class-scheduling.md) | ⏳ Not started | ⏳ Not started | Schedules, conflict detection, room allocation |
 | 04 | Attendance | [04-attendance.md](./04-attendance.md) | ⏳ Not started | ⏳ Not started | Per-period attendance, audit trail, auto-notify adviser |
 | 05 | Content & Learning Materials | [05-content-materials.md](./05-content-materials.md) | ⏳ Not started | ⏳ Not started | Upload/organize materials, versioning, draft vs published |
@@ -34,21 +34,41 @@ you don't hit the same Laravel/PowerShell/Docker rough edges twice.
 
 ---
 
-## Cross-cutting concerns (referenced by every module)
+## Current Implementation Roadmap
 
-These apply project-wide and are documented once here rather than repeated:
+### Phase 1 — Foundation: COMPLETED
+- ✅ User & Role Management (Module 1): Authentication system implemented
+- 🚧 Enrollment & Academic Structure (Module 2): Database foundation laid (UserFactory, DatabaseSeeder updated)
+- ⏳ Class & Scheduling (Module 3): Not started
+- ⏳ Attendance (Module 4): Not started
+- ⏳ Content/Materials (Module 5): Not started
 
-| Concern | Where it lives | Notes |
-|---|---|---|
-| **Data privacy** | [01-auth-accounts.md §6](./01-auth-accounts.md#6-cross-cutting-features-built-in) | Encrypt sensitive fields; log access to guidance records |
-| **Multi-tenancy** | TBD (Phase 6) | `tenant_id` on every table if this ever serves >1 school |
-| **Auditability** | [01-auth-accounts.md §6](./01-auth-accounts.md#6-cross-cutting-features-built-in) | `audit_logs` table is generic/polymorphic — wire in Phase 6 |
-| **Mass assignment** | [01-auth-accounts.md §8.2](./01-auth-accounts.md#82-mass-assignment) | Every model needs `$fillable` |
-| **Response envelope** | [01-auth-accounts.md §10.3](./01-auth-accounts.md#103-code-conventions-used-in-this-module) | `{success, reason, message, data}` |
-| **Service layer** | [01-auth-accounts.md §2](./01-auth-accounts.md#2-architecture-mvc--service-layer) | Business logic in `Services/`, not controllers |
-| **Form Requests** | [01-auth-accounts.md §3](./01-auth-accounts.md#3-file-map) | All validation lives here |
-| **API Resources** | [01-auth-accounts.md §3](./01-auth-accounts.md#3-file-map) | JSON shape; strip sensitive fields |
-| **RBAC (Policies)** | [01-auth-accounts.md §9](./01-auth-accounts.md#9-deferred-work-explicitly-not-done-yet) | Wire in when role-specific dashboards are built |
+### Phase 2 — Daily Operations: NOT STARTED
+- ⏳ Scheduling (Module 3)
+- ⏳ Attendance (Module 4)
+- ⏳ Content/Materials (Module 5)
+
+### Phase 3 — Academics Core: NOT STARTED
+- ⏳ Assignments/Quizzes (Module 6)
+- ⏳ Grading engine (Module 7)
+- ⏳ Report Cards (Module 7)
+
+### Phase 4 — Engagement: NOT STARTED
+- ⏳ Communication (Module 8)
+- ⏳ Notifications (Module 14)
+- ⏳ Calendar (Module 9)
+- ⏳ Parent Portal (Module 12)
+
+### Phase 5 — Oversight: NOT STARTED
+- ⏳ Guidance (Module 10)
+- ⏳ Reports/Analytics (Module 13)
+- ⏳ Library (Module 11)
+
+### Phase 6 — Ops Hardening: NOT STARTED
+- ⏳ School year rollover (Module 15)
+- ⏳ Audit logs
+- ⏳ Backups
+- ⏳ Multi-tenancy (if needed)
 
 ---
 
