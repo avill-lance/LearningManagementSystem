@@ -5,6 +5,23 @@
 @section('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.css" />
     <style>
+        /* Theme tokens: light mode (default) uses the light blue palette, html.dark switches to dark. */
+        .charts-container {
+            --card-bg: linear-gradient(160deg, #ffffff 0%, #f0f7ff 100%);
+            --card-border: #dbeafe;
+            --card-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(37 99 235 / 0.18);
+            --card-text: #0f172a;
+            --card-muted: #64748b;
+            --card-grid: #e2e8f0;
+        }
+        html.dark .charts-container {
+            --card-bg: #1f2937;
+            --card-border: #374151;
+            --card-shadow: none;
+            --card-text: #f9fafb;
+            --card-muted: #9ca3af;
+            --card-grid: #374151;
+        }
         .charts-container {
             max-width: 72rem;
             margin: 0 auto 1rem auto;
@@ -13,23 +30,31 @@
             width: 100%;
         }
         .chart-card {
-            background: #1f2937;
-            border: 1px solid #374151;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
             border-radius: 0.75rem;
+            box-shadow: var(--card-shadow);
             padding: 1rem;
-            color: #f9fafb;
+            color: var(--card-text);
+            transition: background .3s ease, border-color .3s ease, box-shadow .3s ease;
         }
         .chart-card h3 {
             margin: 0 0 0.5rem 0;
             font-size: 0.875rem;
             font-weight: 600;
-            color: #fff;
+            color: var(--card-text);
         }
         .chart-card .chart-subtitle {
             margin: 0 0 0.75rem 0;
             font-size: 0.75rem;
-            color: #6b7280;
+            color: var(--card-muted);
         }
+        /* Chart text/grid colors follow the theme (overrides the colors set in the chart options) */
+        .chart-card .apexcharts-text { fill: var(--card-muted) !important; }
+        .chart-card .apexcharts-legend-text { color: var(--card-muted) !important; }
+        .chart-card .apexcharts-gridline,
+        .chart-card .apexcharts-xaxis-tick { stroke: var(--card-grid) !important; }
+        .chart-card .apexcharts-pie-area { stroke: var(--card-border) !important; }
         .chart-bar { flex: 2; }
         .chart-pie { flex: 1; }
         .chart-bar .apexcharts-canvas,

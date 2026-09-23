@@ -9,6 +9,10 @@
     @include('partials.sidebar.admin')
 @endsection
 
+@section('navbar')
+    @include('partials.navigation.admin')
+@endsection
+
 @section('title', 'Admin Dashboard')
 
 @section('styles')

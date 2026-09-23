@@ -6,11 +6,35 @@
 @section('styles')
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/apexcharts@3.45.1/dist/apexcharts.min.css" />
     <style>
-      .total_nam { color: #ffffff !important; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; shadow: 0 2px 8px rgb(0 0 0 / 0.75); text-shadow: 2px 2px 4px #000;}
+       /* Theme tokens: light mode (default) uses the light blue palette, html.dark switches to dark. */
+       .admin-dashboard-content {
+          --card-bg: linear-gradient(160deg, #ffffff 0%, #f0f7ff 100%);
+          --card-border: #dbeafe;
+          --card-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 8px 24px -12px rgb(37 99 235 / 0.18);
+          --card-text: #0f172a;
+          --card-label: #2563eb;
+          --card-muted: #64748b;
+          --card-grid: #e2e8f0;
+          --fallback-bg: #f8fafc;
+          --fallback-border: #cbd5e1;
+       }
+       html.dark .admin-dashboard-content {
+          --card-bg: #120f17;
+          --card-border: #2f293a;
+          --card-shadow: none;
+          --card-text: #ffffff;
+          --card-label: #c4b5fd;
+          --card-muted: #c4bdca;
+          --card-grid: #2f293a;
+          --fallback-bg: rgba(12, 11, 19, 0.8);
+          --fallback-border: #374151;
+       }
+
+      .total_nam { color: #ffffff !important; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; text-shadow: 2px 2px 4px #000; }
        .admin-bento-grid {
           display: grid;
           grid-template-columns: 1fr;
-          gap: 0.5rem;
+          gap: 0.75rem;
           width: 100%;
           max-width: 72rem;
           margin: 0 auto;
@@ -22,15 +46,32 @@
           min-height: 20rem;
           padding: 1.25rem;
           overflow: visible;
-          color: #fff;
-          background: #120f17;
-          border: 1px solid #2f293a;
+          color: var(--card-text);
+          background: var(--card-bg);
+          border: 1px solid var(--card-border);
           border-radius: 1.25rem;
+          box-shadow: var(--card-shadow);
           position: relative;
+          transition: background .3s ease, border-color .3s ease, box-shadow .3s ease, transform .3s ease;
        }
-       .admin-bento-card__label { color: #c4b5fd; font-size: 0.875rem; font-weight: 500; }
+       .admin-bento-card:hover { transform: translateY(-2px); }
+       .admin-bento-card__label { color: var(--card-label); font-size: 0.875rem; font-weight: 500; }
        .admin-bento-card__title { margin: 0 0 0.25rem; font-size: 1rem; font-weight: 600; }
-       .admin-bento-card__description { margin: 0; color: #c4bdca; font-size: 0.75rem; line-height: 1.2; }
+       .admin-bento-card__description { margin: 0; color: var(--card-muted); font-size: 0.75rem; line-height: 1.2; }
+       .admin-bento-card__total { margin-top: 0.5rem; font-size: 0.75rem; color: var(--card-muted); }
+
+       /* Chart text/grid colors follow the theme (overrides the colors set in the chart options) */
+       .admin-bento-card .apexcharts-text,
+       .admin-bento-card .apexcharts-title-text { fill: var(--card-muted) !important; }
+       .admin-bento-card .apexcharts-legend-text { color: var(--card-muted) !important; }
+       .admin-bento-card .apexcharts-gridline,
+       .admin-bento-card .apexcharts-xaxis-tick { stroke: var(--card-grid) !important; }
+       .admin-bento-card .apexcharts-pie-area { stroke: var(--card-border) !important; }
+
+       /* Image cards keep white text in both modes */
+       .admin-subject-card .apexcharts-text,
+       .admin-subject-card .apexcharts-title-text { fill: #fff !important; }
+       .admin-subject-card .apexcharts-legend-text { color: #fff !important; }
     .admin-subject-card { background-image: url('/images/anya.jpeg'); background-position: center; background-size: cover; }
     .admin-teachers-card { background-image: url('/images/rara.jpeg'); background-position: center; background-size: cover; }
     .admin-subject-card .admin-bento-card__label,
@@ -48,7 +89,7 @@
     .admin-subject-count { position: absolute; top: 50%; left: 50%; z-index: 2; text-align: center; transform: translate(-50%, -50%); pointer-events: none; }
     .admin-subject-count__value { color: #fff; font-size: clamp(2.5rem, 5vw, 4rem); font-weight: 700; line-height: 1; letter-spacing: 0; text-shadow: 0 0 24px rgb(139 92 246 / 0.45); }
     .admin-subject-count__label { margin-top: 0.5rem; color: #c4b5fd; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; }
-       .admin-bento-card__fallback { display: none; align-items: center; justify-content: center; flex-direction: column; gap: 0.5rem; color: #c4b5fd; font-size: 0.85rem; text-align: center; min-height: 220px; background: rgba(12, 11, 19, 0.8); border: 1px dashed #374151; border-radius: 0.75rem; }
+       .admin-bento-card__fallback { display: none; align-items: center; justify-content: center; flex-direction: column; gap: 0.5rem; color: var(--card-label); font-size: 0.85rem; text-align: center; min-height: 220px; background: var(--fallback-bg); border: 1px dashed var(--fallback-border); border-radius: 0.75rem; }
        .admin-bento-card__fallback svg { width: 40px; height: 40px; opacity: 0.4; }
        @media (min-width: 600px) { .admin-bento-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
        @media (min-width: 1024px) {
@@ -82,7 +123,7 @@
        <div class="admin-bento-card__chart-wrap" id="chart-users-role">
           <div class="admin-bento-card__fallback" id="fallback-users-role"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>No user data available</span></div>
        </div>
-       <div style="margin-top:0.5rem;font-size:0.75rem;color:#9ca3af;">Total: {{ $usersByRole->sum('total') }} accounts</div>
+       <div class="admin-bento-card__total">Total: {{ $usersByRole->sum('total') }} accounts</div>
     </article>
 
     <article class="admin-bento-card">
@@ -91,7 +132,7 @@
        <div class="admin-bento-card__chart-wrap" id="chart-attendance">
              <div class="admin-bento-card__fallback" id="fallback-attendance"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg><span>No teacher data available</span></div>
        </div>
-    <div style="margin-top:0.5rem;font-size:0.75rem;color:#9ca3af;">Total teachers: {{ $teachersBySpecialization->sum('total') }}</div>
+    <div class="admin-bento-card__total">Total teachers: {{ $teachersBySpecialization->sum('total') }}</div>
     </article>
 
     <article class="admin-bento-card">
@@ -100,7 +141,7 @@
        <div class="admin-bento-card__chart-wrap" id="chart-students">
           <div class="admin-bento-card__fallback" id="fallback-students"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg><span>No student data available</span></div>
        </div>
-       <div style="margin-top:0.5rem;font-size:0.75rem;color:#9ca3af;">Total students: {{ $studentsByGrade->sum('total') }}</div>
+       <div class="admin-bento-card__total">Total students: {{ $studentsByGrade->sum('total') }}</div>
     </article>
 
     <article class="admin-bento-card">
@@ -109,7 +150,7 @@
        <div class="admin-bento-card__chart-wrap" id="chart-enrollments">
           <div class="admin-bento-card__fallback" id="fallback-enrollments"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg><span>No enrollment data available</span></div>
        </div>
-       <div style="margin-top:0.5rem;font-size:0.75rem;color:#9ca3af;">Total enrollments: {{ $enrollmentTrends->sum('total') }}</div>
+       <div class="admin-bento-card__total">Total enrollments: {{ $enrollmentTrends->sum('total') }}</div>
     </article>
 
     <article class="admin-bento-card admin-teachers-card">

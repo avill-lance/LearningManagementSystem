@@ -26,6 +26,21 @@ class Student extends Model
         'birthdate' => 'date',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function strand()
+    {
+        return $this->belongsTo(Strand::class, 'strand_id');
+    }
+
+    public function enrollments()
+    {
+        return $this->hasMany(Enrollment::class, 'student_id');
+    }
+
     public function account()
     {
         return $this->hasOne(Account::class, 'entity_id', 'student_id')

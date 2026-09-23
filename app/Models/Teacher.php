@@ -14,6 +14,16 @@ class Teacher extends Model
         'contact_number', 'specialization', 'status',
     ];
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function subjects()
+    {
+        return $this->hasMany(Subject::class, 'teacher_id');
+    }
+
     public function account()
     {
         return $this->hasOne(Account::class, 'entity_id', 'teacher_id')
