@@ -101,7 +101,7 @@ class WebAuthController extends Controller
         // Students by created_at month and grade_level for line/bar chart
         $studentsByCreatedAt = DB::table('students')
             ->select(
-                DB::raw('DATE_FORMAT(created_at, "%Y-%m") as period'),
+                DB::raw("strftime('%Y-%m', created_at) as period"),
                 'grade_level',
                 DB::raw('count(*) as total')
             )
