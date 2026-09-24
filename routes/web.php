@@ -12,6 +12,8 @@ Route::view('/', 'landing')->name('landing');
 Route::view('/login', 'auth.login')->name('login');
 Route::post('/login', [WebAuthController::class, 'login'])->name('login.authenticate');
 Route::view('/signup', 'auth.signup')->name('signup');
+Route::view('/otp', 'components.otp.verify')->name('otp');
+Route::view('/otp/reset', 'components.otp.reset')->name('otp.reset');
 Route::view('/registrar/login', 'auth.staff-login', ['portal' => 'registrar'])->name('registrar.login');
 Route::view('/cashier/login', 'auth.staff-login', ['portal' => 'cashier'])->name('cashier.login');
 
@@ -22,7 +24,8 @@ Route::middleware('auth')->group(function () {
 	Route::post('/admin/users', [WebAuthController::class, 'adminUsersStore'])->name('admin.users.store');
 	Route::get('/admin/users/{user}/edit', [WebAuthController::class, 'adminUsersEdit'])->name('admin.users.edit');
 	Route::put('/admin/users/{user}', [WebAuthController::class, 'adminUsersUpdate'])->name('admin.users.update');
-	Route::get('/admin/users/delete/{user}', [WebAuthController::class, 'adminUsersDelete'])->name('admin.users.delete');
+	Route::post('/admin/users/delete/{user}/otp', [WebAuthController::class, 'adminUsersDeleteOtp'])->middleware('throttle:5,1,delete-otp')->name('admin.users.delete.otp');
+	Route::post('/admin/users/delete/{user}', [WebAuthController::class, 'adminUsersDelete'])->name('admin.users.delete');
 	Route::get('/admin/users/restore/{user}', [WebAuthController::class, 'adminUsersRestore'])->name('admin.users.restore');
 	Route::get('/admin/users/{user}', [WebAuthController::class, 'adminUsersShow'])->name('admin.users.show');
 	Route::get('/admin/curriculum', [SubjectController::class, 'index'])->name('admin.curriculum.index');

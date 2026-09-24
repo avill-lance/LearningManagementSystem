@@ -13,6 +13,9 @@ Route::prefix('v1')->group(function () {
     Route::get ('/auth/check-username',   [AuthController::class, 'checkUsername']);
     Route::post('/auth/forgot-password',  [AuthController::class, 'forgotPassword']);
     Route::post('/auth/reset-password',   [AuthController::class, 'resetPassword']);
+    Route::post('/auth/otp/send',         [AccountController::class, 'sendOtp'])->middleware('throttle:3,1,otp-send');
+    Route::post('/auth/otp/verify',       [AccountController::class, 'verifyOtp'])->middleware('throttle:10,1,otp-verify');
+    Route::post('/auth/otp/reset',        [AccountController::class, 'resetPasswordWithOtp'])->middleware('throttle:10,1,otp-reset');
 
     /* ---- Protected account endpoints (Sanctum) ------------------- */
     Route::middleware('auth:sanctum')->group(function () {

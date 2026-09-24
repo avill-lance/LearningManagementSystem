@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Api\V1\AccountController;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -437,14 +440,41 @@ class WebAuthController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Account updated successfully.');
     }
 
-    public function adminUsersDelete($user_id): RedirectResponse
+    /** Email the acting admin a code that must be entered to delete this user. */
+    public function adminUsersDeleteOtp($user_id): JsonResponse
     {
         abort_unless(in_array(auth()->user()->role, ['Admin', 'Staff', 'Registrar', 'Accounting'], true), 403);
 
         $user = User::findOrFail($user_id);
-        $user->update(['is_deleted' => true]);
+        $key = 'delete-otp:' . auth()->id() . ":{$user->user_id}";
+        $code = (string) random_int(100000, 999999);
+        Cache::put($key, ['hash' => Hash::make($code), 'attempts' => 0], now()->addMinutes(10));
 
-        return redirect()->back()->with('success', 'Account deleted successfully.');
+        $intro = 'Enter this code to confirm deleting the account of ' . trim($user->first_name . ' ' . $user->last_name) . '.';
+        if (! AccountController::mailOtp(auth()->user()->email, $code, $intro)) {
+            Cache::forget($key);
+
+            return response()->json(['message' => 'We could not send the code right now. Please try again later.'], 502);
+        }
+
+        return response()->json(['message' => 'Code sent to ' . auth()->user()->email . '.']);
+    }
+
+    public function adminUsersDelete(Request $request, $user_id): JsonResponse
+    {
+        abort_unless(in_array(auth()->user()->role, ['Admin', 'Staff', 'Registrar', 'Accounting'], true), 403);
+
+        $code = $request->validate(['code' => ['required', 'digits:6']])['code'];
+        $user = User::findOrFail($user_id);
+
+        if ($error = AccountController::checkOtp('delete-otp:' . auth()->id() . ":{$user->user_id}", $code)) {
+            return response()->json(['message' => $error], 422);
+        }
+
+        $user->update(['is_deleted' => true]);
+        session()->flash('success', 'Account deleted successfully.');
+
+        return response()->json(['message' => 'Account deleted successfully.']);
     }
 
     public function adminUsersRestore($user_id): RedirectResponse
