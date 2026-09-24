@@ -153,10 +153,13 @@ SUBMISSION and QUIZ_ATTEMPT both feed into GRADE_COMPONENT (module 7) — keep t
 
 **Done:**
 - Models `Assignment`, `Quiz`, `QuizAttempt`, `Submission` exist with `Assignment::pendingForStudent()` / `Quiz::pendingForStudent()` scopes — built as Module 16 (Student Dashboard) dependencies, and covered indirectly by `tests/Feature/StudentDashboardTest.php`.
+- `Assignment::forSectionCalendar()` / `Quiz::forSectionCalendar()` scopes (section-scoped, due-date-not-null) — built as a Module 9 (Calendar) dependency so assignment/quiz due dates surface on the student calendar, covered by `tests/Feature/CalendarControllerTest.php`.
+- `quizzes.due_date` column (migration `2026_09_24_000001_add_due_date_to_quizzes_table`) added so quizzes can appear on the calendar the same way assignments do.
+- `AssignmentSeeder` / `QuizSeeder` (wired into `DatabaseSeeder`) generate placeholder assignment/quiz rows against a demo section/schedule so the calendar has data to render out of the box.
 
 **Not started:**
 - No `AssignmentController`/`QuizController` — no teacher-facing UI to create assignments/quizzes, set due dates, or attach rubrics.
-- No student-facing "take a quiz" or "submit an assignment" flow — only the pending-count aggregation exists.
+- No student-facing "take a quiz" or "submit an assignment" flow — only the pending-count aggregation and calendar due-date display exist.
 - `teacher/assignments/index.blade.php` is an unwired stub; `student/assignments/index.blade.php` renders a real list (via `StudentDashboardController`) but has no submission form yet.
 - No rubric model/UI.
 
@@ -166,3 +169,4 @@ SUBMISSION and QUIZ_ATTEMPT both feed into GRADE_COMPONENT (module 7) — keep t
 
 - [Module 5: Content & Learning Materials](./05-content-learning-materials.md)
 - [Module 7: Grading & Report Cards](./07-grading-report-cards.md)
+- [Module 9: Calendar & Events](./09-calendar-events.md)

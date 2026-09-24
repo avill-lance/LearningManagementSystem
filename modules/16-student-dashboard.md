@@ -216,6 +216,13 @@ every insert against the `strands` table (it has no `updated_at` column) — thi
 code creating strands, not just this test. `php artisan test` now runs clean: 13 passed (28
 assertions), including the 4 new `StudentDashboardTest` cases above.
 
+**Update (Sept 2026, post Module 9 landing):** the dashboard's three stat tiles were re-skinned from
+`components/cards/stat.blade.php` to a shared `bento-card` grid (`partials/styles/bento.blade.php`,
+reused across most student pages now) — cosmetic only, the underlying `StudentDashboardService`
+queries and `StudentDashboardTest` coverage are unchanged. The "Upcoming Events" tile now links to a
+fully working calendar (Module 9's `CalendarController`) instead of a stub view. `php artisan test`
+still runs clean project-wide: 22 passed (46 assertions) across all feature/unit tests.
+
 ---
 
 ## Related Modules

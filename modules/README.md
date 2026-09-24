@@ -27,10 +27,10 @@ models, migrations, routes, views, tests) — not inferred from the docs.
 | 03 | Class & Scheduling | [03-class-scheduling.md](./03-class-scheduling.md) | 🚧 In progress | `Schedule` model only (built as Module 16 plumbing). No controller/UI, no conflict detection, no `Room` model. |
 | 04 | Attendance | [04-attendance.md](./04-attendance.md) | ⏳ Not started | Table exists via migration only. No model, controller, or wired view. |
 | 05 | Content & Learning Materials | [05-content-learning-materials.md](./05-content-learning-materials.md) | ⏳ Not started | No model, controller, or wired view. |
-| 06 | Assignments, Quizzes & Assessments | [06-assignments-quizzes-assessments.md](./06-assignments-quizzes-assessments.md) | 🚧 In progress | `Assignment`, `Quiz`, `QuizAttempt`, `Submission` models exist with real scopes (Module 16 dependency), tested. No teacher-facing CRUD/UI yet — teacher views are stubs. |
+| 06 | Assignments, Quizzes & Assessments | [06-assignments-quizzes-assessments.md](./06-assignments-quizzes-assessments.md) | 🚧 In progress | `Assignment`, `Quiz`, `QuizAttempt`, `Submission` models exist with real scopes (Module 16 + Module 9 dependencies), tested. No teacher-facing CRUD/UI yet — teacher views are stubs. |
 | 07 | Grading & Report Cards | [07-grading-report-cards.md](./07-grading-report-cards.md) | ⏳ Not started | Tables exist via migrations only. No models/controllers/UI. |
 | 08 | Communication & Announcements | [08-communication-announcements.md](./08-communication-announcements.md) | 🚧 In progress | `Announcement` model + `visibleToSection()` scope real and tested (Module 16 dependency). No posting UI; no `Message` model; messaging views are stubs. |
-| 09 | Calendar & Events | [09-calendar-events.md](./09-calendar-events.md) | 🚧 In progress | `ScheduleEvent` model + `upcomingForStudent()` scope real and tested (Module 16 dependency). `/calendar` route renders an unwired stub view — no CRUD UI. |
+| 09 | Calendar & Events | [09-calendar-events.md](./09-calendar-events.md) | 🚧 In progress | Real `CalendarController` + `CalendarEventService` + `StoreCalendarEventRequest`, wired to `/calendar` with a full FullCalendar UI and 9 passing tests. Student-only end to end — no admin/teacher event creation/viewing yet. |
 | 10 | Guidance & Counseling | [10-guidance-counseling.md](./10-guidance-counseling.md) | ⏳ Not started | No code beyond the plan. |
 | 11 | Library / Resource Management | [11-library-resource-management.md](./11-library-resource-management.md) | ⏳ Not started | No code beyond the plan. |
 | 12 | Parent / Guardian Portal | [12-parent-guardian-portal.md](./12-parent-guardian-portal.md) | ⏳ Not started | `guardians` table exists (with `students.guardian_id` FK) but no `Guardian` Eloquent model and no portal UI. |
@@ -55,8 +55,8 @@ Implementation Status sections for what's actually enforced today):
 | **Auditability** | 🚧 Partial | Audit-log data backs Module 13's `/admin/reports` dashboard (real, working) |
 | **Mass assignment** | ✅ Followed | Models use `$fillable` consistently |
 | **Response envelope** | N/A | No JSON API in active use (`routes/api.php` is empty — all flows are session-based Blade, see Module 1) |
-| **Service layer** | 🚧 Partial | `StudentDashboardService` (Module 16) is the clearest example so far; most controllers still hold their own query logic |
-| **Form Requests** | 🚧 Partial | Used in some controllers (e.g. `EnrollmentController`), not yet universal |
+| **Service layer** | 🚧 Partial | `StudentDashboardService` (Module 16) and `CalendarEventService` (Module 9) are the clearest examples so far; most controllers still hold their own query logic |
+| **Form Requests** | 🚧 Partial | Used in some controllers (e.g. `EnrollmentController`, `StoreCalendarEventRequest`), not yet universal |
 | **RBAC (Policies)** | Not implemented | Controllers use ad hoc `abort_unless(in_array($request->user()->role, [...]))` checks; no Laravel Policies/Gates yet |
 
 ---

@@ -815,6 +815,11 @@ Notable findings from this pass:
   view → test chain, and it accidentally created the first real Eloquent models for Modules 6, 8,
   and 9 (`Assignment`, `Quiz`, `QuizAttempt`, `Submission`, `Announcement`, `ScheduleEvent`) as a
   side effect — those tables existed in migrations but had zero models before.
+- **Update:** Module 9 (Calendar & Events) has since grown its own controller → service → view →
+  test chain (`CalendarController`, `CalendarEventService`, `StoreCalendarEventRequest`, a full
+  FullCalendar UI, 9 passing tests), and repaid the favor by adding `forSectionCalendar()` scopes
+  to `Assignment`/`Quiz` (Module 6) plus a `quizzes.due_date` column, so assignment/quiz deadlines
+  now render on the calendar. Still student-only — no admin/teacher event CRUD exists yet.
 - Two live bugs found during review, not yet fixed: `Strand::track()` (Module 2) references a
   `Track` model that doesn't exist in `app/Models/`; the `Guardian` model (Module 12) is entirely
   missing despite `students.guardian_id` being a real FK.
