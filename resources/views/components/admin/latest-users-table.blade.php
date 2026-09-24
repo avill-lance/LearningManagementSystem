@@ -865,6 +865,7 @@
             otpDigits.forEach((d, i) => { d.value = value[i] || ''; d.classList.toggle('is-filled', !!d.value); });
         };
         otpDigits.forEach((box, i) => {
+            box.addEventListener('focus', () => box.select());
             box.addEventListener('input', () => {
                 box.value = box.value.replace(/\D/g, '').slice(-1);
                 box.classList.toggle('is-filled', !!box.value);
@@ -909,6 +910,7 @@
             otpSubmit.disabled = true;
             otpModal.showModal();
             const res = await postJson(`/admin/users/delete/${userId}/otp`);
+            if (otpUserId !== userId) return; // modal was reopened for another user meanwhile
             otpStatus.textContent = res.ok ? res.message : '';
             otpSetError(res.ok ? '' : res.message);
             otpSubmit.disabled = !res.ok;

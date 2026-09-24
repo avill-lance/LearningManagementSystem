@@ -18,6 +18,9 @@ class DeleteUserOtpTest extends TestCase
         $target = User::create(['first_name' => 'Tar', 'last_name' => 'Get', 'email' => 'target@example.com', 'password' => 'secret123', 'role' => 'Student', 'status' => 'Active']);
 
         $this->actingAs($admin)->postJson("/admin/users/delete/{$target->user_id}/otp")->assertOk();
+        // Reopening the modal right away must not send (and invalidate) a second code.
+        $this->postJson("/admin/users/delete/{$target->user_id}/otp")->assertOk();
+        Http::assertSentCount(1);
 
         // Pull the code out of the email sent to the admin.
         $code = null;

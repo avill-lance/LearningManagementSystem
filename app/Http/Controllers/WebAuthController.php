@@ -459,8 +459,14 @@ class WebAuthController extends Controller
 
         $user = User::findOrFail($user_id);
         $key = 'delete-otp:' . auth()->id() . ":{$user->user_id}";
+
+        // Brevo takes a few minutes to deliver; reopening the modal must not replace a code that is still on its way.
+        if (($pending = Cache::get($key)) && ($pending['sent_at'] ?? 0) > now()->subMinutes(3)->timestamp) {
+            return response()->json(['message' => 'A code was already sent to ' . auth()->user()->email . '. It can take a few minutes to arrive.']);
+        }
+
         $code = (string) random_int(100000, 999999);
-        Cache::put($key, ['hash' => Hash::make($code), 'attempts' => 0], now()->addMinutes(10));
+        Cache::put($key, ['hash' => Hash::make($code), 'attempts' => 0, 'sent_at' => now()->timestamp], now()->addMinutes(10));
 
         $intro = 'Enter this code to confirm deleting the account of ' . trim($user->first_name . ' ' . $user->last_name) . '.';
         if (! AccountController::mailOtp(auth()->user()->email, $code, $intro)) {

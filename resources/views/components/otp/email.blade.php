@@ -1,6 +1,5 @@
 {{-- OTP email. Styles are inline (Tailwind palette values) because email clients strip <style> and class-based CSS. --}}
-{{-- Logo: BREVO_LOGO_URL wins; else public/images/Icon.png, but only when APP_URL is public (inboxes can't load localhost images). --}}
-@php($logo = config('services.brevo.logo_url') ?: (preg_match('#//(localhost|127\.0\.0\.1)#', config('app.url')) ? null : asset('images/Icon.png')))
+@php($logo = config('services.brevo.logo_url'))
 <!DOCTYPE html>
 <html lang="en">
 <head>
