@@ -114,12 +114,17 @@ GAP: the current ERD (section 4) has no dedicated EVENT table — Calendar reuse
 *(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
 
 **Done:**
-- `ScheduleEvent` model with `upcomingForStudent()` scope (personal events created by the student, or events scoped to their active section, within a 14-day window) — built as a Module 16 dependency and covered by `tests/Feature/StudentDashboardTest.php`. The student dashboard's "Upcoming Events" widget is real and working.
+- `CalendarController` (`index`, `events`, `store`, `update`, `destroy`) wired to `/calendar` and `/calendar/events` (`routes/web.php`), backed by `CalendarEventService::feedFor()` — a real service-layer class, not query logic in the controller.
+- `shared/calendar/index.blade.php` + `resources/js/calendar.js` render a full FullCalendar month view (create/edit/delete via Alpine-driven modals), fed by the JSON `events` endpoint.
+- `ScheduleEvent::upcomingForStudent()` (14-day dashboard widget, Module 16 dependency) and the newer `ScheduleEvent::forStudentCalendar()` (arbitrary date-range scope powering the month/week navigation) both exist.
+- `CalendarEventService::feedFor()` merges three sources into one feed shape: the student's personal/section-scoped `ScheduleEvent` rows, plus `Assignment::forSectionCalendar()` and `Quiz::forSectionCalendar()` due dates (new scopes on those models, see Module 6) — so assignment/quiz deadlines already show up on the calendar without a separate UI.
+- `StoreCalendarEventRequest` validates event creation/update (`title`, `description`, `start_datetime`, `end_datetime`).
+- `tests/Feature/CalendarControllerTest.php` — 9 passing tests: index renders, feed merges all three sources, feed excludes other sections/students, create/update/delete a personal event, validation errors, a student cannot edit a teacher-created event, non-student roles get 403.
 
-**Not started:**
-- `shared/calendar/index.blade.php` (the `/calendar` route) is an unwired stub — no month/week view, no event creation UI for any role.
-- No `CalendarController`/`EventController` for admin or teacher event CRUD.
+**Not started / partial:**
+- Every controller action is `abort_unless($request->user()->role === 'Student', 403)` — **admin/teacher event creation and viewing don't exist yet.** This directly contradicts this module's own "Keep in mind" note (a teacher should see all sections they handle) and the flowchart's "Admin/Teacher creates event" step — the only way a non-personal event reaches `schedule_events` today is by hand/seed, e.g. the "Teacher-created" fixture in the test file.
 - No recurring-event support.
+- No school-wide (audience-scoped) events — only "personal" (student-created) and section-scoped events are modeled; the flowchart's School-wide/Section/Subject scope split isn't implemented.
 
 ---
 
