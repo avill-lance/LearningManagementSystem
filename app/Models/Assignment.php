@@ -59,4 +59,15 @@ class Assignment extends Model
             ->whereHas('schedule', fn (Builder $q) => $q->where('section_id', $sectionId))
             ->whereNotNull('due_date');
     }
+
+    /**
+     * Assignments (with a due date) belonging to any of the given teacher's
+     * schedules — feeds the teacher calendar. Mirrors forSectionCalendar().
+     */
+    public function scopeForTeacherCalendar(Builder $query, int $teacherId): Builder
+    {
+        return $query
+            ->whereHas('schedule', fn (Builder $q) => $q->where('teacher_id', $teacherId))
+            ->whereNotNull('due_date');
+    }
 }

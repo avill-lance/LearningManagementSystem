@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Submission extends Model
@@ -28,5 +29,17 @@ class Submission extends Model
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    /**
+     * Submissions turned in ('Submitted' or 'Late') but not yet graded, for
+     * assignments belonging to the given teacher's schedules — feeds the
+     * teacher dashboard's "Pending Grading" tile.
+     */
+    public function scopeAwaitingGradingForTeacher(Builder $query, int $teacherId): Builder
+    {
+        return $query
+            ->whereIn('status', ['Submitted', 'Late'])
+            ->whereHas('assignment.schedule', fn (Builder $q) => $q->where('teacher_id', $teacherId));
     }
 }

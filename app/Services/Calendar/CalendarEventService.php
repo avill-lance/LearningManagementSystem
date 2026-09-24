@@ -6,6 +6,7 @@ use App\Models\Assignment;
 use App\Models\Quiz;
 use App\Models\ScheduleEvent;
 use App\Models\Student;
+use App\Models\Teacher;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 
@@ -72,6 +73,70 @@ class CalendarEventService
                 'start' => $quiz->due_date,
                 'end' => $quiz->due_date,
                 'url' => route('student.quizzes.index'),
+                'classNames' => ['fc-event--quiz'],
+                'extendedProps' => [
+                    'source' => 'quiz',
+                    'subject_name' => $quiz->schedule?->subject?->subject_name,
+                    'editable' => false,
+                ],
+            ]);
+
+        return $events->concat($assignments)->concat($quizzes)->values();
+    }
+
+    /**
+     * Build the merged calendar feed for a teacher within [$from, $to]: their
+     * own/section-scoped schedule events, plus assignment and quiz due dates
+     * for every section they teach. Mirrors feedFor() for students.
+     */
+    public function feedForTeacher(Teacher $teacher, Carbon $from, Carbon $to): Collection
+    {
+        $teacherId = $teacher->teacher_id;
+
+        $events = ScheduleEvent::forTeacherCalendar($teacherId, $from, $to)
+            ->get()
+            ->map(fn (ScheduleEvent $event) => [
+                'id' => 'event-' . $event->event_id,
+                'title' => $event->title,
+                'start' => $event->start_datetime,
+                'end' => $event->end_datetime,
+                'classNames' => ['fc-event--personal'],
+                'extendedProps' => [
+                    'source' => 'event',
+                    'subject_name' => $event->subject?->subject_name,
+                    'description' => $event->description,
+                    'editable' => $event->created_by_role === 'Teacher' && $event->created_by_id === $teacherId,
+                ],
+            ]);
+
+        $assignments = Assignment::forTeacherCalendar($teacherId)
+            ->whereBetween('due_date', [$from, $to])
+            ->with('schedule.subject')
+            ->get()
+            ->map(fn (Assignment $assignment) => [
+                'id' => 'assignment-' . $assignment->assignment_id,
+                'title' => $assignment->title,
+                'start' => $assignment->due_date,
+                'end' => $assignment->due_date,
+                'url' => url('/teacher/assignments'),
+                'classNames' => ['fc-event--assignment'],
+                'extendedProps' => [
+                    'source' => 'assignment',
+                    'subject_name' => $assignment->schedule?->subject?->subject_name,
+                    'editable' => false,
+                ],
+            ]);
+
+        $quizzes = Quiz::forTeacherCalendar($teacherId)
+            ->whereBetween('due_date', [$from, $to])
+            ->with('schedule.subject')
+            ->get()
+            ->map(fn (Quiz $quiz) => [
+                'id' => 'quiz-' . $quiz->quiz_id,
+                'title' => $quiz->title,
+                'start' => $quiz->due_date,
+                'end' => $quiz->due_date,
+                'url' => url('/teacher/assignments'),
                 'classNames' => ['fc-event--quiz'],
                 'extendedProps' => [
                     'source' => 'quiz',

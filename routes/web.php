@@ -2,11 +2,15 @@
 
 use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\EnrollmentController;
+use App\Http\Controllers\MaterialDownloadController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PasswordChangeController;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\StudentDashboardController;
+use App\Http\Controllers\StudentMaterialController;
 use App\Http\Controllers\SubjectController;
+use App\Http\Controllers\TeacherDashboardController;
+use App\Http\Controllers\TeacherMaterialController;
 use App\Http\Controllers\WebAuthController;
 use Illuminate\Support\Facades\Route;
 
@@ -44,11 +48,18 @@ Route::middleware('auth')->group(function () {
 	Route::put('/password/change', [PasswordChangeController::class, 'update'])->name('password.change.update');
 
 	Route::middleware('password.changed')->group(function () {
-		Route::get('/teacher/', [WebAuthController::class, 'teacherDashboard'])->name('teacher.dashboard');
+		Route::get('/teacher/', [TeacherDashboardController::class, 'index'])->name('teacher.dashboard');
+		Route::get('/teacher/materials', [TeacherMaterialController::class, 'index'])->name('teacher.materials.index');
+		Route::post('/teacher/materials', [TeacherMaterialController::class, 'store'])->name('teacher.materials.store');
+		Route::put('/teacher/materials/{material}', [TeacherMaterialController::class, 'update'])->name('teacher.materials.update');
+		Route::delete('/teacher/materials/{material}', [TeacherMaterialController::class, 'destroy'])->name('teacher.materials.destroy');
 
 		Route::get('/student/', [StudentDashboardController::class, 'index'])->name('student.dashboard');
+		Route::get('/student/materials', [StudentMaterialController::class, 'index'])->name('student.materials.index');
 		Route::view('/student/assignments', 'student.assignments.index')->name('student.assignments.index');
 		Route::view('/student/quizzes', 'student.quizzes.index')->name('student.quizzes.index');
+		Route::get('/materials/{material}/download', [MaterialDownloadController::class, 'show'])->name('materials.download');
+		Route::get('/materials/{material}/preview', [MaterialDownloadController::class, 'preview'])->name('materials.preview');
 		Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
 		Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
 		Route::post('/calendar/events', [CalendarController::class, 'store'])->name('calendar.events.store');

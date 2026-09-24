@@ -96,7 +96,20 @@ Keep storage abstracted (Laravel Filesystem/S3-compatible driver) so large media
 
 *(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
 
-**Not started.** No `LearningMaterial` (or similarly named) Eloquent model exists. `teacher/materials/index.blade.php` and `student/materials/index.blade.php` are unwired placeholder views with no upload form, no list, and no storage wiring.
+**Done:**
+- `LearningMaterial` model (`app/Models/LearningMaterial.php`) — `forTeacher()` scope (materials across a teacher's schedules) and `visibleToSection()` scope (Published-only, section-scoped) drive the two list views.
+- `TeacherMaterialController` (`index`, `store`, `update`, `destroy`) wired to `/teacher/materials` (`routes/web.php`) — full upload/edit/delete CRUD, scoped so a teacher can only manage materials on their own schedules (`authorizeOwnership()`), with class/status filters and Draft/Published/Archived stat tiles.
+- `StudentMaterialController` (`index`) wired to `/student/materials` — lists only `Published` materials for the student's active-enrollment section, grouped by subject.
+- `MaterialDownloadController` (`show`/download, `preview`) wired to `/materials/{material}/download` and `/materials/{material}/preview` — both routed through a shared `authorizeAccess()` gate: a teacher may only access materials on their own schedules; a student only `Published` materials in their own section. Files are stored on the `local` (non-public) disk so drafts never get a guessable URL; `preview()` streams inline (`Storage::response()`) so PDFs/videos render in-browser, `show()` forces a download.
+- Teacher UI (`teacher/materials/index.blade.php`): upload/edit modal with a pre-upload blob preview (PDF via `<iframe>`, video via `<video>`, other types show name/size) before the file is submitted, plus a "Current file" thumbnail card when editing an existing material. Student UI (`student/materials/index.blade.php`): materials grouped by subject with Preview/Download actions per item.
+- `database/seeders/LearningMaterialSeeder.php` seeds demo Published/Draft materials for the demo teacher/schedule.
+- `tests/Feature/TeacherMaterialTest.php` and `tests/Feature/StudentMaterialTest.php` — teacher upload/update/delete/ownership checks, teacher preview/ownership, student Published-only visibility, section scoping, draft-blocking, preview/download access checks — all passing (part of the project's 42/42 passing suite).
+
+**Not started / partial (gaps vs. this doc's original spec):**
+- **No versioning.** `update()` replaces `file_url` in place and deletes the old file from storage — there is no history of prior file versions, despite this module's stated "Function" including "versioning of materials."
+- **No offline-friendly-format handling.** Uploads accept `pdf,doc,docx,ppt,pptx,xls,xlsx,mp4,zip` with a flat 20 MB cap; there's no low-bandwidth video link support or format-specific guidance called out in the original "Keep in mind" notes.
+- **No access analytics.** The flowchart's "System logs access for analytics" step isn't implemented — downloads/previews aren't logged anywhere (no audit-log integration).
+- Materials are scoped by **schedule** (which already implies subject + section), not independently taggable by strand/semester the way the original data model implies — acceptable given schedules already carry that context, but there's no semester-level "archive all of last semester's materials" bulk action.
 
 ---
 

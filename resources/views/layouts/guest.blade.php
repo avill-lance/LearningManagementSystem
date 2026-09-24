@@ -1,7 +1,9 @@
 {{--
     Layout: Guest
-    Purpose: Layout for unauthenticated pages (login, register, forgot-password).
-    No sidebar, no navigation. Minimal wrapper.
+    Purpose: Layout for unauthenticated pages (login, register, forgot-password)
+    and the forced first-login password-change gate. No sidebar, no navigation.
+    Minimal wrapper. Always renders light -- this page family (login-style auth
+    screens) was never designed with a dark variant, unlike the app shell.
 --}}
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
@@ -12,22 +14,24 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @yield('styles')
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
+<body class="@yield('bodyClass', 'bg-gray-50') min-h-screen flex flex-col">
     {{-- Site Header (minimal) --}}
     <header class="w-full p-6">
         <div class="max-w-7xl mx-auto flex justify-between items-center">
             <a href="{{ url('/') }}" class="text-2xl font-bold text-primary">
                 {{ config('app.name', 'LMS') }}
             </a>
-            @if (Route::has('login'))
-                <nav>
-                    @auth
-                        <a href="{{ url('/dashboard') }}" class="text-sm hover:underline">Dashboard</a>
-                    @else
-                        <a href="{{ route('login') }}" class="text-sm hover:underline">Log in</a>
-                    @endauth
-                </nav>
-            @endif
+            @unless (request()->routeIs('password.change'))
+                @if (Route::has('login'))
+                    <nav>
+                        @auth
+                            <a href="{{ url('/dashboard') }}" class="text-sm hover:underline">Dashboard</a>
+                        @else
+                            <a href="{{ route('login') }}" class="text-sm hover:underline">Log in</a>
+                        @endauth
+                    </nav>
+                @endif
+            @endunless
         </div>
     </header>
 

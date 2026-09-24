@@ -40,4 +40,19 @@ class Announcement extends Model
             $q->whereNull('section_id')->orWhere('section_id', $sectionId);
         });
     }
+
+    /**
+     * School-wide announcements plus any targeted at a section the given
+     * teacher has a schedule in — feeds the teacher dashboard's "Latest
+     * Announcement" widget.
+     */
+    public function scopeVisibleToTeacher(Builder $query, int $teacherId): Builder
+    {
+        return $query->where(function (Builder $q) use ($teacherId) {
+            $q->whereNull('section_id')
+                ->orWhereIn('section_id', function ($sub) use ($teacherId) {
+                    $sub->select('section_id')->from('schedules')->where('teacher_id', $teacherId);
+                });
+        });
+    }
 }
