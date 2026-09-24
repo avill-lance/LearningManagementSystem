@@ -14,10 +14,11 @@ class Quiz extends Model
     const UPDATED_AT = null;
 
     protected $fillable = [
-        'schedule_id', 'title', 'time_limit_minutes',
+        'schedule_id', 'title', 'time_limit_minutes', 'due_date',
     ];
 
     protected $casts = [
+        'due_date' => 'datetime',
         'created_at' => 'datetime',
     ];
 
@@ -42,5 +43,16 @@ class Quiz extends Model
             ->whereDoesntHave('attempts', function (Builder $q) use ($studentId) {
                 $q->where('student_id', $studentId)->whereNotNull('submitted_at');
             });
+    }
+
+    /**
+     * Quizzes with a due date set, belonging to schedules in the given section —
+     * feeds the student calendar. See modules/09-calendar-events.md.
+     */
+    public function scopeForSectionCalendar(Builder $query, int $sectionId): Builder
+    {
+        return $query
+            ->whereHas('schedule', fn (Builder $q) => $q->where('section_id', $sectionId))
+            ->whereNotNull('due_date');
     }
 }

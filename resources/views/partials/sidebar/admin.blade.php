@@ -1,6 +1,6 @@
 @php
    $user = auth()->user();
-   $userName = $user->name ?? 'Administrator';
+   $userName = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')) ?: 'Administrator';
    $initials = collect(explode(' ', trim($userName)))->filter()->take(2)->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode('');
 
    $linkBase = 'sb-link group relative flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200';

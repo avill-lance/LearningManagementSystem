@@ -1,9 +1,25 @@
 {{-- Student: Quizzes --}}
 @extends('layouts.student')
 @section('title', 'My Quizzes')
+
+@section('styles')
+    @include('partials.styles.bento')
+@endsection
+
 @section('content')
-    <div class="space-y-6">
-        <h1 class="text-2xl font-bold">My Quizzes</h1>
-        {{-- Quiz list and attempt-taking --}}
+    <div class="bento-content">
+        <div class="bento-header">
+            <h1 class="text-2xl font-bold text-gray-900 dark:text-white">My Quizzes</h1>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Attempt and review your quizzes.</p>
+        </div>
+        <div class="bento-grid">
+            <article class="bento-card bento-card--span-2">
+                <div class="bento-card__label">Academics</div>
+                <h2 class="bento-card__title">Quiz List</h2>
+                <p class="bento-card__description">Quizzes across your enrolled subjects</p>
+                {{-- Quiz list and attempt-taking --}}
+            </article>
+        </div>
     </div>
 @endsection
+

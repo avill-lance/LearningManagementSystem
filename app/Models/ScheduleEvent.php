@@ -53,4 +53,26 @@ class ScheduleEvent extends Model
                 }
             });
     }
+
+    /**
+     * Events visible to a student within an arbitrary date range: their own
+     * personal events, plus any events scoped to their active section. Unlike
+     * upcomingForStudent() (fixed 14-day dashboard widget), this powers the
+     * full calendar's month/week navigation.
+     */
+    public function scopeForStudentCalendar(Builder $query, int $studentId, ?int $sectionId, $from, $to): Builder
+    {
+        return $query
+            ->where('start_datetime', '<=', $to)
+            ->where('end_datetime', '>=', $from)
+            ->where(function (Builder $q) use ($studentId, $sectionId) {
+                $q->where(function (Builder $q2) use ($studentId) {
+                    $q2->where('created_by_role', 'Student')->where('created_by_id', $studentId);
+                });
+
+                if ($sectionId !== null) {
+                    $q->orWhere('section_id', $sectionId);
+                }
+            });
+    }
 }
