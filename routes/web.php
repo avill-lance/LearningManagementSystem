@@ -12,6 +12,8 @@ Route::view('/', 'landing')->name('landing');
 Route::view('/login', 'auth.login')->name('login');
 Route::post('/login', [WebAuthController::class, 'login'])->name('login.authenticate');
 Route::view('/signup', 'auth.signup')->name('signup');
+Route::view('/registrar/login', 'auth.staff-login', ['portal' => 'registrar'])->name('registrar.login');
+Route::view('/cashier/login', 'auth.staff-login', ['portal' => 'cashier'])->name('cashier.login');
 
 Route::middleware('auth')->group(function () {
 	Route::get('/admin/', [WebAuthController::class, 'adminDashboard'])->name('admin.dashboard');
