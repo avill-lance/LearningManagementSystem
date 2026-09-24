@@ -48,4 +48,15 @@ class Assignment extends Model
                     ->whereIn('status', self::COMPLETED_SUBMISSION_STATUSES);
             });
     }
+
+    /**
+     * Assignments (with a due date) belonging to schedules in the given section —
+     * feeds the student calendar. See modules/09-calendar-events.md.
+     */
+    public function scopeForSectionCalendar(Builder $query, int $sectionId): Builder
+    {
+        return $query
+            ->whereHas('schedule', fn (Builder $q) => $q->where('section_id', $sectionId))
+            ->whereNotNull('due_date');
+    }
 }

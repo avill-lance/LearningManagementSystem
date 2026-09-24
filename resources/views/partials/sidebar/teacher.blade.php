@@ -1,3 +1,9 @@
+@php
+   $user = auth()->user();
+   $userName = trim(($user->first_name ?? '') . ' ' . ($user->last_name ?? '')) ?: 'Teacher';
+   $initials = collect(explode(' ', trim($userName)))->filter()->take(2)->map(fn ($part) => mb_strtoupper(mb_substr($part, 0, 1)))->implode('');
+@endphp
+
 {{-- Button to toggle sidebar on mobile devices --}}
 <button data-drawer-target="separator-sidebar" data-drawer-toggle="separator-sidebar" aria-controls="separator-sidebar" type="button" class="inline-flex items-center p-2 mt-2 ms-3 text-sm text-gray-500 rounded-lg sm:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600">
    <span class="sr-only">Open sidebar</span>
@@ -8,7 +14,7 @@
 
 {{-- Teacher Sidebar Component --}}
 <aside id="separator-sidebar" class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0" aria-label="Sidebar">
-   <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 border-e border-gray-200 dark:border-gray-700">
+   <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 border-e border-gray-200 dark:border-gray-700 flex flex-col">
       <a href="{{ route('teacher.dashboard') }}" class="flex items-center ps-2.5 mb-5 space-x-3 rtl:space-x-reverse">
          <span class="self-center text-xl font-semibold whitespace-nowrap text-gray-900 dark:text-white">LMS</span>
          <span class="bg-emerald-100 text-emerald-800 text-xs font-medium px-2 py-0.5 rounded dark:bg-emerald-900 dark:text-emerald-300">Teacher</span>
@@ -100,5 +106,22 @@
             </form>
          </li>
       </ul>
+
+      {{-- Account footer: avatar, name, role badge, and dark/light mode toggle --}}
+      <div class="mt-auto pt-4 border-t border-gray-200 dark:border-gray-700">
+         <div class="flex items-center gap-3 px-2 py-1.5">
+            <span class="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-emerald-600 text-xs font-semibold text-white">{{ $initials ?: 'T' }}</span>
+            <div class="min-w-0 flex-1">
+               <p class="truncate text-sm font-medium text-gray-900 dark:text-white">{{ $userName }}</p>
+               <p class="truncate text-xs text-gray-500 dark:text-gray-400">Teacher</p>
+            </div>
+            <button type="button" @click="dark = !dark"
+                    :aria-label="dark ? 'Switch to light mode' : 'Switch to dark mode'"
+                    class="group relative flex h-9 w-9 shrink-0 items-center justify-center overflow-visible rounded-full text-gray-500 transition-colors duration-200 hover:bg-gray-100 hover:text-emerald-600 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-yellow-300">
+               <svg class="absolute h-5 w-5 transition-all duration-500" :class="dark ? 'rotate-90 scale-0 opacity-0' : 'rotate-0 scale-100 opacity-100'" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 0 1 8.646 3.646 9.003 9.003 0 0 0 12 21a9.003 9.003 0 0 0 8.354-5.646z"/></svg>
+               <svg class="absolute h-5 w-5 transition-all duration-500" :class="dark ? 'rotate-0 scale-100 opacity-100' : '-rotate-90 scale-0 opacity-0'" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364-.707-.707M6.343 6.343l-.707-.707m12.728 0-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 1 1-8 0 4 4 0 0 1 8 0z"/></svg>
+            </button>
+         </div>
+      </div>
    </div>
 </aside>

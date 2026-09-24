@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CalendarController;
 use App\Http\Controllers\EnrollmentController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PasswordChangeController;
@@ -48,7 +49,11 @@ Route::middleware('auth')->group(function () {
 		Route::get('/student/', [StudentDashboardController::class, 'index'])->name('student.dashboard');
 		Route::view('/student/assignments', 'student.assignments.index')->name('student.assignments.index');
 		Route::view('/student/quizzes', 'student.quizzes.index')->name('student.quizzes.index');
-		Route::view('/calendar', 'shared.calendar.index')->name('calendar.index');
+		Route::get('/calendar', [CalendarController::class, 'index'])->name('calendar.index');
+		Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
+		Route::post('/calendar/events', [CalendarController::class, 'store'])->name('calendar.events.store');
+		Route::put('/calendar/events/{event}', [CalendarController::class, 'update'])->name('calendar.events.update');
+		Route::delete('/calendar/events/{event}', [CalendarController::class, 'destroy'])->name('calendar.events.destroy');
 		Route::view('/announcements', 'shared.announcements.index')->name('announcements.index');
 	});
 });

@@ -3,24 +3,42 @@
 
 @section('title', 'Student Dashboard')
 
+@section('styles')
+    @include('partials.styles.bento')
+@endsection
+
 @section('content')
-<div class="space-y-6">
-    {{-- Stat cards: pending work at a glance --}}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <x-cards.stat label="Pending Assignments" :value="$pendingAssignmentsCount" href="{{ route('student.assignments.index') }}">
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5.586a1 1 0 0 1 .707.293l5.414 5.414a1 1 0 0 1 .293.707V19a2 2 0 0 1-2 2Z"/></svg>
-        </x-cards.stat>
-
-        <x-cards.stat label="Pending Quizzes" :value="$pendingQuizzesCount" href="{{ route('student.quizzes.index') }}">
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 13V8m0 8h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/></svg>
-        </x-cards.stat>
-
-        <x-cards.stat label="Upcoming Events" :value="$upcomingEvents->count()" href="{{ route('calendar.index') }}">
-            <svg class="w-5 h-5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24"><path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2Z"/></svg>
-        </x-cards.stat>
+<div class="bento-content">
+    <div class="bento-header">
+        <h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+        <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Your assignments, quizzes, and upcoming events at a glance.</p>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    {{-- Stat cards: pending work at a glance --}}
+    <div class="bento-grid">
+        <a href="{{ route('student.assignments.index') }}" class="bento-card">
+            <div class="bento-card__label">Academics</div>
+            <h2 class="bento-card__title">Pending Assignments</h2>
+            <p class="bento-card__description">Assignments awaiting submission</p>
+            <div class="bento-card__value">{{ $pendingAssignmentsCount }}</div>
+        </a>
+
+        <a href="{{ route('student.quizzes.index') }}" class="bento-card">
+            <div class="bento-card__label">Academics</div>
+            <h2 class="bento-card__title">Pending Quizzes</h2>
+            <p class="bento-card__description">Quizzes not yet attempted</p>
+            <div class="bento-card__value">{{ $pendingQuizzesCount }}</div>
+        </a>
+
+        <a href="{{ route('calendar.index') }}" class="bento-card">
+            <div class="bento-card__label">Schedule</div>
+            <h2 class="bento-card__title">Upcoming Events</h2>
+            <p class="bento-card__description">Events in the next 14 days</p>
+            <div class="bento-card__value">{{ $upcomingEvents->count() }}</div>
+        </a>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-6xl mx-auto px-3">
         {{-- Calendar widget: next few upcoming events --}}
         <x-cards.list title="Upcoming Events" href="{{ route('calendar.index') }}" hrefLabel="View calendar" empty="No upcoming events in the next 14 days.">
             @foreach($upcomingEvents as $event)
@@ -47,3 +65,4 @@
     </div>
 </div>
 @endsection
+
