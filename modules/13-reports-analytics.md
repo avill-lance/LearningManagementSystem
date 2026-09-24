@@ -7,7 +7,7 @@ This file is one module out of a set of module-context files for the **Senior Hi
 curriculum (Academic, TVL, Sports, Arts & Design tracks; STEM, ABM, HUMSS, GAS, etc. strands),
 adaptable to any SHS setup.
 
-**Tech stack:** Laravel (backend/API) + Vue.js (frontend SPA). See **Section 0 — Tech Stack** in
+**Tech stack (as planned):** Laravel (backend/API) + Vue.js (frontend SPA). *Correction: the actual codebase never adopted Vue — it is server-rendered Laravel Blade + Alpine.js + ApexCharts (see `package.json`; no Vue dependency exists). See Module 16 and `modules/README.md` for real implementation status.* See **Section 0 — Tech Stack** in
 [`senior-high-school-lms-plan.md`](../senior-high-school-lms-plan.md) for the full stack decision,
 the strict scalability/readability rule that governs all code in this project, and an explanation
 of the Laravel file structure.
@@ -101,6 +101,19 @@ flowchart TD
 ## Implementation Notes
 
 Purely a read/aggregation layer — no new entities of its own. Consider a queued job + cached/materialized summary tables so dashboards don't run heavy queries live.
+
+---
+
+## Implementation Status
+
+*(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
+
+**Done:**
+- `ReportController` + `/admin/reports` — a real, working audit-log dashboard: filters (date range, user, action type), summary stat cards, and a "top active users" breakdown. This is the furthest-along of the not-yet-fully-built modules.
+
+**Not started:**
+- No at-risk-student dashboards, no DepEd-compliant export formats (these depend on Modules 4/7 which don't exist yet).
+- Reporting is currently scoped to audit-log activity only, not academic/attendance analytics.
 
 ---
 

@@ -7,7 +7,7 @@ This file is one module out of a set of module-context files for the **Senior Hi
 curriculum (Academic, TVL, Sports, Arts & Design tracks; STEM, ABM, HUMSS, GAS, etc. strands),
 adaptable to any SHS setup.
 
-**Tech stack:** Laravel (backend/API) + Vue.js (frontend SPA). See **Section 0 — Tech Stack** in
+**Tech stack (as planned):** Laravel (backend/API) + Vue.js (frontend SPA). *Correction: the actual codebase never adopted Vue — it is server-rendered Laravel Blade + Alpine.js + ApexCharts (see `package.json`; no Vue dependency exists). See Module 16 and `modules/README.md` for real implementation status.* See **Section 0 — Tech Stack** in
 [`senior-high-school-lms-plan.md`](../senior-high-school-lms-plan.md) for the full stack decision,
 the strict scalability/readability rule that governs all code in this project, and an explanation
 of the Laravel file structure.
@@ -106,6 +106,20 @@ flowchart TD
 ## Implementation Notes
 
 School year rollover is the trickiest single workflow in the whole system — model it as an explicit, resumable job/pipeline, not an ad hoc script.
+
+---
+
+## Implementation Status
+
+*(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
+
+**Partial / gaps:**
+- `SchoolYear` model exists and is used by Enrollment (Module 2) and the Student Dashboard tests, but `admin/school-year/index.blade.php` is an unwired stub — no CRUD UI to create/activate a school year from the admin panel.
+
+**Not started:**
+- School-year rollover logic (promoting students, archiving sections) — no `RolloverService`, no Artisan command.
+- Backup/restore tooling.
+- Permission-matrix UI (ties to Module 1's missing Policies/Gates).
 
 ---
 

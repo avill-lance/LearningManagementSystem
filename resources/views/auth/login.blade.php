@@ -339,10 +339,6 @@
                     <h1 class="text-center text-3xl font-extrabold tracking-tight text-slate-900">
                         Login to Your <span class="bg-gradient-to-r from-sky-500 to-blue-600 bg-clip-text text-transparent">Account</span>
                     </h1>
-                    <p class="mt-3 text-center text-sm font-medium text-slate-500">
-                        Don't have an account?
-                        <a href="{{ route('signup') }}" class="font-bold text-sky-700 underline underline-offset-2 hover:text-sky-900">Sign up</a>
-                    </p>
 
                     {{-- Session Status --}}
                     @if (session('status'))
@@ -468,7 +464,7 @@
                         </div>
 
                         <p class="mt-8 text-center">
-                            <a href="{{ route('password.request') }}" class="text-sm font-semibold text-sky-700 underline underline-offset-4 hover:text-sky-900">Forgot password?</a>
+                            <a href="{{ route('otp') }}" class="text-sm font-semibold text-sky-700 underline underline-offset-4 hover:text-sky-900">Forgot password?</a>
                         </p>
                     </form>
                 </div>

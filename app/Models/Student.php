@@ -41,6 +41,18 @@ class Student extends Model
         return $this->hasMany(Enrollment::class, 'student_id');
     }
 
+    /**
+     * The student's current active enrollment (status = Enrolled, most recent by
+     * date_enrolled). A student can have multiple enrollment rows across school
+     * years/semesters, so this is derived rather than a static column.
+     */
+    public function activeEnrollment()
+    {
+        return $this->hasOne(Enrollment::class, 'student_id')
+            ->where('status', 'Enrolled')
+            ->latestOfMany('date_enrolled');
+    }
+
     public function account()
     {
         return $this->hasOne(Account::class, 'entity_id', 'student_id')

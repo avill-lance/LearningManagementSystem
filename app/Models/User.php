@@ -26,6 +26,7 @@ class User extends Authenticatable
         'middle_name',
         'email',
         'password',
+        'must_change_password',
         'role',
         'status',
         'is_deleted',
@@ -54,6 +55,7 @@ class User extends Authenticatable
     {
         return [
             'password' => 'hashed',
+            'must_change_password' => 'boolean',
             'is_deleted' => 'boolean',
             'birthdate' => 'date',
         ];

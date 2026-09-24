@@ -16,6 +16,19 @@ A blueprint for building a Learning Management System tailored to Senior High Sc
 **Frontend:** Vue.js (SPA) — consumes the Laravel API, component-based UI per role dashboard (Admin, Teacher, Student, Guardian, Guidance).
 **Database:** relational (MySQL/PostgreSQL), matching the ERD in Section 4.
 
+> **⚠️ Stack correction (Sept 2026):** the Vue.js SPA described above was never
+> adopted. `package.json` has no Vue dependency; every screen is a
+> server-rendered Laravel Blade view. The actual frontend stack is **Blade +
+> Alpine.js (interactivity) + ApexCharts (charts)**. `routes/api.php` is
+> empty — there is no JSON API in active use; auth and all data flows are
+> session-based (see `WebAuthController`). This plan's ERD, module scope, and
+> business rules are still the accurate target design; only the "Laravel +
+> Vue SPA + REST API" framing in this section and in modules 01–15 is
+> outdated. See [`modules/16-student-dashboard.md`](./16-student-dashboard.md)
+> for the first module written against the real stack, and
+> [`modules/README.md`](./README.md) for a per-module implementation
+> status table.
+
 ### Strict rule: scalability and readability
 
 > **Every piece of this system — backend and frontend — must be built to be scalable and
@@ -785,11 +798,45 @@ flowchart TD
 
 ---
 
+## 6.16 Current Implementation Status (Sept 2026)
+
+*Verified directly against the codebase — controllers, models, migrations, routes, views, and
+tests. See [`modules/README.md`](./README.md) for the full per-module table with file-level
+detail; summary:*
+
+| Status | Modules |
+|---|---|
+| ✅ Done | 16 (Student Dashboard) |
+| 🚧 In progress (real backend/models exist, UI or scope incomplete) | 1, 2, 3, 6, 8, 9, 13, 14 |
+| ⏳ Not started (plan/migration only) | 4, 5, 7, 10, 11, 12, 15 |
+
+Notable findings from this pass:
+- The Student Dashboard (Module 16) is the only module with a fully wired controller → service →
+  view → test chain, and it accidentally created the first real Eloquent models for Modules 6, 8,
+  and 9 (`Assignment`, `Quiz`, `QuizAttempt`, `Submission`, `Announcement`, `ScheduleEvent`) as a
+  side effect — those tables existed in migrations but had zero models before.
+- **Update:** Module 9 (Calendar & Events) has since grown its own controller → service → view →
+  test chain (`CalendarController`, `CalendarEventService`, `StoreCalendarEventRequest`, a full
+  FullCalendar UI, 9 passing tests), and repaid the favor by adding `forSectionCalendar()` scopes
+  to `Assignment`/`Quiz` (Module 6) plus a `quizzes.due_date` column, so assignment/quiz deadlines
+  now render on the calendar. Still student-only — no admin/teacher event CRUD exists yet.
+- Two live bugs found during review, not yet fixed: `Strand::track()` (Module 2) references a
+  `Track` model that doesn't exist in `app/Models/`; the `Guardian` model (Module 12) is entirely
+  missing despite `students.guardian_id` being a real FK.
+- Self-service registration/password-reset (originally under Module 1) was removed from the
+  codebase — account provisioning is now Admin-only.
+- `routes/api.php` is empty; despite Section 0 describing a REST/JSON API, no module currently
+  uses one — everything is session-based Blade.
+
+---
+
 ## 7. Next Steps Checklist
 
 - [ ] Finalize grading formula rules per DepEd/institution requirements
 - [ ] Decide on multi-tenancy (single school vs SaaS for many schools)
-- [x] Choose tech stack — **Laravel + Vue.js** (see Section 0); still decide DB engine and hosting
+- [x] Choose tech stack — **Laravel + Vue.js** (see Section 0); still decide DB engine and hosting.
+      *Correction: implementation actually settled on Laravel + Blade + Alpine.js + ApexCharts,
+      not Vue — see the Section 0 stack-correction note and §6.16 above.*
 - [ ] Design wireframes for Student, Teacher, Guardian, Admin dashboards
 - [ ] Set up role-based access control matrix (who can see/edit what)
 - [ ] Plan data migration/import strategy for existing student records

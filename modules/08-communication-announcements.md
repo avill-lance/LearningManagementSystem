@@ -7,7 +7,7 @@ This file is one module out of a set of module-context files for the **Senior Hi
 curriculum (Academic, TVL, Sports, Arts & Design tracks; STEM, ABM, HUMSS, GAS, etc. strands),
 adaptable to any SHS setup.
 
-**Tech stack:** Laravel (backend/API) + Vue.js (frontend SPA). See **Section 0 — Tech Stack** in
+**Tech stack (as planned):** Laravel (backend/API) + Vue.js (frontend SPA). *Correction: the actual codebase never adopted Vue — it is server-rendered Laravel Blade + Alpine.js + ApexCharts (see `package.json`; no Vue dependency exists). See Module 16 and `modules/README.md` for real implementation status.* See **Section 0 — Tech Stack** in
 [`senior-high-school-lms-plan.md`](../senior-high-school-lms-plan.md) for the full stack decision,
 the strict scalability/readability rule that governs all code in this project, and an explanation
 of the Laravel file structure.
@@ -108,6 +108,20 @@ flowchart TD
 ## Implementation Notes
 
 Every announcement/message should raise a NOTIFICATION event (module 14) rather than pushing directly — keep delivery channels decoupled from content creation.
+
+---
+
+## Implementation Status
+
+*(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
+
+**Done:**
+- `Announcement` model with `visibleToSection()` scope (school-wide when `section_id IS NULL`, or scoped to a given section) — built as a Module 16 dependency and covered by `tests/Feature/StudentDashboardTest.php`. `shared/announcements/index.blade.php` renders a real, working list via `StudentDashboardController`.
+
+**Not started:**
+- No `AnnouncementController` for creating/editing/deleting announcements — no admin or teacher posting UI.
+- No `Message` model and no direct-messaging feature — `shared/messages/index.blade.php`, `teacher/communication/index.blade.php`, and `student/communication/index.blade.php` are all unwired placeholder views.
+- No broadcast/notification hookup when an announcement is posted (see Module 14 — not yet event-driven).
 
 ---
 

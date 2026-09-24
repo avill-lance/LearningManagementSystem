@@ -7,7 +7,7 @@ This file is one module out of a set of module-context files for the **Senior Hi
 curriculum (Academic, TVL, Sports, Arts & Design tracks; STEM, ABM, HUMSS, GAS, etc. strands),
 adaptable to any SHS setup.
 
-**Tech stack:** Laravel (backend/API) + Vue.js (frontend SPA). See **Section 0 — Tech Stack** in
+**Tech stack (as planned):** Laravel (backend/API) + Vue.js (frontend SPA). *Correction: the actual codebase never adopted Vue — it is server-rendered Laravel Blade + Alpine.js + ApexCharts (see `package.json`; no Vue dependency exists). See Module 16 and `modules/README.md` for real implementation status.* See **Section 0 — Tech Stack** in
 [`senior-high-school-lms-plan.md`](../senior-high-school-lms-plan.md) for the full stack decision,
 the strict scalability/readability rule that governs all code in this project, and an explanation
 of the Laravel file structure.
@@ -147,7 +147,26 @@ SUBMISSION and QUIZ_ATTEMPT both feed into GRADE_COMPONENT (module 7) — keep t
 
 ---
 
+## Implementation Status
+
+*(verified against the codebase, Sept 2026 — see `modules/README.md` for the project-wide table)*
+
+**Done:**
+- Models `Assignment`, `Quiz`, `QuizAttempt`, `Submission` exist with `Assignment::pendingForStudent()` / `Quiz::pendingForStudent()` scopes — built as Module 16 (Student Dashboard) dependencies, and covered indirectly by `tests/Feature/StudentDashboardTest.php`.
+- `Assignment::forSectionCalendar()` / `Quiz::forSectionCalendar()` scopes (section-scoped, due-date-not-null) — built as a Module 9 (Calendar) dependency so assignment/quiz due dates surface on the student calendar, covered by `tests/Feature/CalendarControllerTest.php`.
+- `quizzes.due_date` column (migration `2026_09_24_000001_add_due_date_to_quizzes_table`) added so quizzes can appear on the calendar the same way assignments do.
+- `AssignmentSeeder` / `QuizSeeder` (wired into `DatabaseSeeder`) generate placeholder assignment/quiz rows against a demo section/schedule so the calendar has data to render out of the box.
+
+**Not started:**
+- No `AssignmentController`/`QuizController` — no teacher-facing UI to create assignments/quizzes, set due dates, or attach rubrics.
+- No student-facing "take a quiz" or "submit an assignment" flow — only the pending-count aggregation and calendar due-date display exist.
+- `teacher/assignments/index.blade.php` is an unwired stub; `student/assignments/index.blade.php` renders a real list (via `StudentDashboardController`) but has no submission form yet.
+- No rubric model/UI.
+
+---
+
 ## Related Modules
 
 - [Module 5: Content & Learning Materials](./05-content-learning-materials.md)
 - [Module 7: Grading & Report Cards](./07-grading-report-cards.md)
+- [Module 9: Calendar & Events](./09-calendar-events.md)

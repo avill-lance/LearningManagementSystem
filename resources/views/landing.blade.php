@@ -376,7 +376,7 @@
         </div>
 
         @foreach ([
-            'Apply' => [['Get started', route('signup')], ['Requirements', '#requirements'], ['How it works', '#how']],
+            'Apply' => [['Get started', route('login')], ['Requirements', '#requirements'], ['How it works', '#how']],
             'Explore' => [['Strands', '#strands'], ['Bulletin', '#bulletin'], ['Pay tuition', route('login')]],
             'Office hours' => ['Monday to Friday, 8:00 AM – 5:00 PM', "Registrar's Office, Administration Building", ['Registrar login', route('registrar.login')], ['Cashier login', route('cashier.login')]],
         ] as $heading => $items)
