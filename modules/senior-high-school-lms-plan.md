@@ -807,8 +807,8 @@ detail; summary:*
 | Status | Modules |
 |---|---|
 | ✅ Done | 16 (Student Dashboard) |
-| 🚧 In progress (real backend/models exist, UI or scope incomplete) | 1, 2, 3, 6, 8, 9, 13, 14 |
-| ⏳ Not started (plan/migration only) | 4, 5, 7, 10, 11, 12, 15 |
+| 🚧 In progress (real backend/models exist, UI or scope incomplete) | 1, 2, 3, 5, 6, 8, 9, 13, 14 |
+| ⏳ Not started (plan/migration only) | 4, 7, 10, 11, 12, 15 |
 
 Notable findings from this pass:
 - The Student Dashboard (Module 16) is the only module with a fully wired controller → service →
@@ -820,6 +820,15 @@ Notable findings from this pass:
   FullCalendar UI, 9 passing tests), and repaid the favor by adding `forSectionCalendar()` scopes
   to `Assignment`/`Quiz` (Module 6) plus a `quizzes.due_date` column, so assignment/quiz deadlines
   now render on the calendar. Still student-only — no admin/teacher event CRUD exists yet.
+- **Update:** Module 5 (Content & Learning Materials) also now has a full backend: `LearningMaterial`
+  model with `forTeacher()`/`visibleToSection()` scopes, `TeacherMaterialController` (upload/edit/
+  delete, owner-scoped), `StudentMaterialController` (Published-only, section-scoped, grouped by
+  subject), and `MaterialDownloadController` sharing one `authorizeAccess()` gate for both a forced
+  download (`show()`) and an inline browser preview (`preview()`, PDFs/video render without
+  downloading). Files stay on the non-public `local` disk so drafts never get a guessable URL.
+  `tests/Feature/TeacherMaterialTest.php` + `tests/Feature/StudentMaterialTest.php` pass. Real gaps
+  against this module's original spec: no file versioning (edits overwrite in place), no
+  offline-friendly-format handling, and no access-analytics logging.
 - Two live bugs found during review, not yet fixed: `Strand::track()` (Module 2) references a
   `Track` model that doesn't exist in `app/Models/`; the `Guardian` model (Module 12) is entirely
   missing despite `students.guardian_id` being a real FK.

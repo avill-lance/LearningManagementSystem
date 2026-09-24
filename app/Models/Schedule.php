@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class Schedule extends Model
@@ -44,5 +45,19 @@ class Schedule extends Model
     public function quizzes()
     {
         return $this->hasMany(Quiz::class, 'schedule_id');
+    }
+
+    /**
+     * A teacher's periods for today (matching the current day-of-week name,
+     * e.g. "Monday"), ordered by start time — feeds the teacher dashboard's
+     * "Today's Schedule" widget. See modules/16-student-dashboard.md's sibling
+     * teacher dashboard notes.
+     */
+    public function scopeForTeacherToday(Builder $query, int $teacherId, string $dayOfWeek): Builder
+    {
+        return $query
+            ->where('teacher_id', $teacherId)
+            ->where('day_of_week', $dayOfWeek)
+            ->orderBy('start_time');
     }
 }

@@ -55,6 +55,24 @@ class ScheduleEvent extends Model
     }
 
     /**
+     * Scheduled, not-yet-started events visible to a teacher: their own
+     * personal events, plus any events scoped to a section they teach.
+     */
+    public function scopeUpcomingForTeacher(Builder $query, int $teacherId): Builder
+    {
+        return $query
+            ->where('status', 'Scheduled')
+            ->where('start_datetime', '>=', now())
+            ->where(function (Builder $q) use ($teacherId) {
+                $q->where(function (Builder $q2) use ($teacherId) {
+                    $q2->where('created_by_role', 'Teacher')->where('created_by_id', $teacherId);
+                })->orWhereIn('section_id', function ($sub) use ($teacherId) {
+                    $sub->select('section_id')->from('schedules')->where('teacher_id', $teacherId);
+                });
+            });
+    }
+
+    /**
      * Events visible to a student within an arbitrary date range: their own
      * personal events, plus any events scoped to their active section. Unlike
      * upcomingForStudent() (fixed 14-day dashboard widget), this powers the
@@ -73,6 +91,25 @@ class ScheduleEvent extends Model
                 if ($sectionId !== null) {
                     $q->orWhere('section_id', $sectionId);
                 }
+            });
+    }
+
+    /**
+     * Events visible to a teacher within an arbitrary date range: their own
+     * personal events, plus any events scoped to a section they teach. Mirrors
+     * forStudentCalendar() for the full calendar's month/week navigation.
+     */
+    public function scopeForTeacherCalendar(Builder $query, int $teacherId, $from, $to): Builder
+    {
+        return $query
+            ->where('start_datetime', '<=', $to)
+            ->where('end_datetime', '>=', $from)
+            ->where(function (Builder $q) use ($teacherId) {
+                $q->where(function (Builder $q2) use ($teacherId) {
+                    $q2->where('created_by_role', 'Teacher')->where('created_by_id', $teacherId);
+                })->orWhereIn('section_id', function ($sub) use ($teacherId) {
+                    $sub->select('section_id')->from('schedules')->where('teacher_id', $teacherId);
+                });
             });
     }
 }

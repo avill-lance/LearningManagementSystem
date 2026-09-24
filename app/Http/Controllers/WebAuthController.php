@@ -469,11 +469,6 @@ class WebAuthController extends Controller
         return redirect()->back()->with('success', 'Account restored successfully.');
     }
 
-    public function teacherDashboard(Request $request): View|RedirectResponse
-    {
-        return $this->dashboardFor($request, ['Teacher'], 'teacher.dashboard');
-    }
-
     public function logout(Request $request): RedirectResponse
     {
         Auth::logout();
@@ -481,12 +476,5 @@ class WebAuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('login');
-    }
-
-    private function dashboardFor(Request $request, array $roles, string $view): View|RedirectResponse
-    {
-        abort_unless(in_array($request->user()->role, $roles, true), 403);
-
-        return view($view);
     }
 }

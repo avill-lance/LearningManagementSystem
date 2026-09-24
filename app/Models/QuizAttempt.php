@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 class QuizAttempt extends Model
@@ -29,5 +30,18 @@ class QuizAttempt extends Model
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
+    }
+
+    /**
+     * Attempts turned in (submitted_at set) but not yet scored, for quizzes
+     * belonging to the given teacher's schedules — feeds the teacher
+     * dashboard's "Quizzes Awaiting Review" tile.
+     */
+    public function scopeAwaitingReviewForTeacher(Builder $query, int $teacherId): Builder
+    {
+        return $query
+            ->whereNotNull('submitted_at')
+            ->whereNull('score')
+            ->whereHas('quiz.schedule', fn (Builder $q) => $q->where('teacher_id', $teacherId));
     }
 }
